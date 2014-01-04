@@ -1,13 +1,15 @@
 #include <avr/pgmspace.h>
+#include <SPI.h>
+
 #undef PROGMEM
 #define PROGMEM __attribute__(( section(".progmem.data") ))
 
-#include <lib_aci.h>
-#include <aci_setup.h>
-#include <SPI.h>
+#include "nordic/lib_aci.h"
+#include "nordic/aci_setup.h"
+#include "bluecap.h"
+#include "services.h"
 
 /* Put the nRF8001 setup in the RAM of the nRF8001.*/
-#include <ble_shield.h>
 /* Include the services_lock.h to put the setup in the OTP memory of the nRF8001.
 This would mean that the setup cannot be changed once put in.
 However this removes the need to do the setup of the nRF8001 on every reset.*/
@@ -68,7 +70,7 @@ void ble_set_pins(uint8_t reqn, uint8_t rdyn) {
 	rdyn_pin = rdyn;
 }
 
-void BlueCap::setName(char *name) {
+void setName(char *name) {
     unsigned char len=0;
 
     len = strlen(name);
@@ -79,7 +81,7 @@ void BlueCap::setName(char *name) {
        strcpy(device_name, name);
 }
 
-void BlueCap::begin() {
+void begin() {
 		 /* Point ACI data structures to the the setup data that the nRFgo studio generated for the nRF8001 */
 		if (NULL != services_pipe_type_mapping)
 		{
@@ -128,7 +130,7 @@ void BlueCap::begin() {
 
 volatile byte ack = 0;
 
-void BlueCap::write(unsigned char data) {
+void write(unsigned char data) {
 		if(tx_buffer_len == MAX_TX_BUFF) {
 				return;
 		}
@@ -137,12 +139,12 @@ void BlueCap::write(unsigned char data) {
 
 }
 
-void BlueCap::writeBytes(unsigned char *data, uint8_t len) {
+void writeBytes(unsigned char *data, uint8_t len) {
     for (int i = 0; i < len; i++)
-        this.write(data[i]);
+        write(data[i]);
 }
 
-int BlueCap::read() {
+int read() {
 	int data;
 	if(rx_buffer_len == 0) return -1;
 	if(p_before == &rx_buff[MAX_RX_BUFF])
@@ -155,15 +157,15 @@ int BlueCap::read() {
 	return data;
 }
 
-unsigned char BlueCap::available() {
+unsigned char available() {
 	return rx_buffer_len;
 }
 
-unsigned char BlueCap::connected() {
+unsigned char connected() {
     return is_connected;
 }
 
-static void BlueCap::processEvents() {
+static void processEvents() {
 	if (lib_aci_event_get(&aci_state, &aci_data)) {
 		aci_evt_t  *aci_evt;
 		aci_evt = &aci_data.evt;
@@ -280,7 +282,7 @@ static void BlueCap::processEvents() {
 	}
 }
 
-void BlueCap::doEvents() {
+void doEvents() {
 	if (lib_aci_is_pipe_available(&aci_state, PIPE_UART_OVER_BTLE_UART_TX_TX)) {
 		if(tx_buffer_len > 0) {
 			unsigned char Index = 0;
@@ -300,7 +302,7 @@ void BlueCap::doEvents() {
 				Serial.println(aci_state.data_credit_available,DEC);
 				ack = 0;
 				while (!ack)
-					process_events();
+					processEvents();
 			}
 
 				if(true == lib_aci_send_data(PIPE_UART_OVER_BTLE_UART_TX_TX,& tx_buff[Index], tx_buffer_len)) {
@@ -317,9 +319,9 @@ void BlueCap::doEvents() {
 				Serial.println(aci_state.data_credit_available,DEC);
 				ack = 0;
 				while (!ack)
-					this.processEvents();
+					processEvents();
 		}
 	}
-	this.processEvents();
+	processEvents();
 }
 
