@@ -1,48 +1,7 @@
-///-------- define these in your sketch, if applicable ----------------------------------------------------------
-//-------- These must go in your sketch ahead of the #include <PinChangeInt.h> statement -----------------------
-// You can reduce the memory footprint of this handler by declaring that there will be no pin change interrupts
-// on any one or two of the three ports.  If only a single port remains, the handler will be declared inline
-// reducing the size and latency of the handler.
-// #define NO_PORTB_PINCHANGES // to indicate that port b will not be used for pin change interrupts
-// #define NO_PORTC_PINCHANGES // to indicate that port c will not be used for pin change interrupts
-// #define NO_PORTD_PINCHANGES // to indicate that port d will not be used for pin change interrupts
-
-// --- Mega support ---
-// #define NO_PORTB_PINCHANGES // to indicate that port b will not be used for pin change interrupts
-#define NO_PORTJ_PINCHANGES // to indicate that port c will not be used for pin change interrupts
-// #define NO_PORTK_PINCHANGES // to indicate that port d will not be used for pin change interrupts
-// In the Mega, there is no Port C, no Port D.  Instead, you get Port J and Port K.  Port B remains.
-// Port J, however, is practically useless because there is only 1 pin available for interrupts.  Most
-// of the Port J pins are not even connected to a header connection.  // </end> "Mega Support" notes
-
-// --- Sanguino, Mioduino support ---
-// #define NO_PORTA_PINCHANGES // to indicate that port a will not be used for pin change interrupts
-
-// Other preprocessor directives...
-// You can reduce the code size by 20-50 bytes, and you can speed up the interrupt routine
-// slightly by declaring that you don't care if the static variables PCintPort::pinState and/or
-// PCintPort::arduinoPin are set and made available to your interrupt routine.
-
-#define NO_PIN_STATE        // to indicate that you don't need the pinState
-#define NO_PIN_NUMBER       // to indicate that you don't need the arduinoPin
-#define DISABLE_PCINT_MULTI_SERVICE // to limit the handler to servicing a single interrupt per invocation.
-// #define GET_PCINT_VERSION   // to enable the uint16_t getPCIintVersion () function.
-
-// The following is intended for testing purposes.  If defined, then a whole host of static variables can be read
-// in your interrupt subroutine.  It is not defined by default, and you DO NOT want to define this in
-// Production code!:
-// #define PINMODE
-//-------- define the above in your sketch, if applicable ------------------------------------------------------
-//#include <PinChangeInt.h>
-//#include <SPI.h>
-
 #include <avr/pgmspace.h>
-
 #undef PROGMEM
 #define PROGMEM __attribute__(( section(".progmem.data") ))
 
-//#include<ble_system.h>
-#include <boards.h>
 #include <lib_aci.h>
 #include <aci_setup.h>
 #include <SPI.h>
@@ -180,7 +139,7 @@ void BlueCap::write(unsigned char data) {
 
 void BlueCap::writeBytes(unsigned char *data, uint8_t len) {
     for (int i = 0; i < len; i++)
-        ble_write(data[i]);
+        this.write(data[i]);
 }
 
 int BlueCap::read() {
