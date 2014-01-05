@@ -18,7 +18,6 @@ class BlueCap {
 public:
 
   BlueCap(char* name);
-  BlueCap();
   ~BlueCap();
 
   void begin();

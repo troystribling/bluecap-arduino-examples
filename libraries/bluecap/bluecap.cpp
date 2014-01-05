@@ -73,10 +73,6 @@ BlueCap::BlueCap(char* name) {
 	init(name);
 }
 
-BlueCap::BlueCap() {
-	init("BlueCap");
-}
-
 BlueCap::~BlueCap() {
 	free(deviceName);
 }
@@ -324,9 +320,10 @@ void BlueCap::setPins(uint8_t reqn, uint8_t rdyn) {
 }
 
 void BlueCap::setDeviceName(char* name) {
-	if (strlen(name) <= MAX_NAME_SIZE) {
-		strcpy(deviceName, name);
+	if (strlen(name) > MAX_NAME_SIZE) {
+		name[MAX_NAME_SIZE] = '\0';
 	}
+	strcpy(deviceName, name);
 }
 
 
