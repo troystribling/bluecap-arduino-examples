@@ -7,6 +7,7 @@
 #include "nordic/lib_aci.h"
 #include "nordic/aci_setup.h"
 #include "services.h"
+#include "dlog.h"
 
 #undef PROGMEM
 #define PROGMEM __attribute__(( section(".progmem.data") ))

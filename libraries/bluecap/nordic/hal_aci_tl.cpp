@@ -2,14 +2,14 @@
  *
  * The information contained herein is property of Nordic Semiconductor ASA.
  * Terms and conditions of usage are described in detail in NORDIC
- * SEMICONDUCTOR STANDARD SOFTWARE LICENSE AGREEMENT. 
+ * SEMICONDUCTOR STANDARD SOFTWARE LICENSE AGREEMENT.
  *
  * Licensees are granted free, non-transferable use of the information. NO
  * WARRANTY of ANY KIND is provided. This heading must NOT be removed from
  * the file.
  *
  * $LastChangedRevision: 4808 $
- */ 
+ */
 
 /** @file
 @brief Implementation of the ACI transport layer module
@@ -42,7 +42,7 @@ static aci_pins_t	 *a_pins_local_ptr;
 static void m_aci_q_init(aci_queue_t *aci_q)
 {
   uint8_t loop;
-  
+
   aci_debug_print = false;
   aci_q->head = 0;
   aci_q->tail = 0;
@@ -62,17 +62,17 @@ bool m_aci_q_enqueue(aci_queue_t *aci_q, hal_aci_data_t *p_data)
 {
   const uint8_t next = (aci_q->tail + 1) % ACI_QUEUE_SIZE;
   const uint8_t length = p_data->buffer[0];
-  
+
   if (next == aci_q->head)
   {
     /* full queue */
     return false;
   }
   aci_q->aci_data[aci_q->tail].status_byte = 0;
-  
+
   memcpy((uint8_t *)&(aci_q->aci_data[aci_q->tail].buffer[0]), (uint8_t *)&p_data->buffer[0], length + 1);
   aci_q->tail = next;
-  
+
   return true;
 }
 
@@ -84,10 +84,10 @@ static bool m_aci_q_dequeue(aci_queue_t *aci_q, hal_aci_data_t *p_data)
     /* empty queue */
     return false;
   }
-  
+
   memcpy((uint8_t *)p_data, (uint8_t *)&(aci_q->aci_data[aci_q->head]), sizeof(hal_aci_data_t));
   aci_q->head = (aci_q->head + 1) % ACI_QUEUE_SIZE;
-  
+
   return true;
 }
 
@@ -100,11 +100,11 @@ bool m_aci_q_is_full(aci_queue_t *aci_q)
 {
   uint8_t next;
   bool state;
-  
+
   //This should be done in a critical section
   noInterrupts();
-  next = (aci_q->tail + 1) % ACI_QUEUE_SIZE;  
-  
+  next = (aci_q->tail + 1) % ACI_QUEUE_SIZE;
+
   if (next == aci_q->head)
   {
     state = true;
@@ -113,10 +113,10 @@ bool m_aci_q_is_full(aci_queue_t *aci_q)
   {
     state = false;
   }
-  
+
   interrupts();
   //end
-  
+
   return state;
 }
 
@@ -127,7 +127,7 @@ void m_print_aci_data(hal_aci_data_t *p_data)
   const uint8_t length = p_data->buffer[0];
   uint8_t i;
   Serial.print(length, DEC);
-  Serial.print(" :");
+  Serial.print(F(" :"));
   for (i=0; i<=length; i++)
   {
     Serial.print(p_data->buffer[i], HEX);
@@ -140,7 +140,7 @@ void m_print_aci_data(hal_aci_data_t *p_data)
 void m_rdy_line_handle(void)
 {
   hal_aci_data_t *p_aci_data;
-  
+
 #if defined(__SAM3X8E__)
   // nothing here, but we need to do as this, compiler bug?
 #else
@@ -148,10 +148,10 @@ void m_rdy_line_handle(void)
 #endif
 
   detachInterrupt(1);
-  
+
   // Receive or transmit data
   p_aci_data = hal_aci_tl_poll_get();
-  
+
   // Check if we received data
   if (p_aci_data->buffer[0] > 0)
   {
@@ -160,7 +160,7 @@ void m_rdy_line_handle(void)
       /* Receive Buffer full.
          Should never happen.
          Spin in a while loop.
-         */	  
+         */
        while(1);
     }
     if (m_aci_q_is_full(&aci_rx_q))
@@ -176,22 +176,22 @@ void m_rdy_line_handle(void)
 		EIMSK &= ~(0x2);
 #endif
 	  }
-    }    
+    }
   }
 }
 
 bool hal_aci_tl_event_get(hal_aci_data_t *p_aci_data)
 {
   bool was_full = m_aci_q_is_full(&aci_rx_q);
-  
+
   if (m_aci_q_dequeue(&aci_rx_q, p_aci_data))
   {
     if (true == aci_debug_print)
     {
-      Serial.print(" E");
+      Serial.print(F(" E"));
       m_print_aci_data(p_aci_data);
     }
-    
+
     if (was_full)
     {
 	  if (true == a_pins_local_ptr->interface_is_interrupt)
@@ -215,14 +215,14 @@ bool hal_aci_tl_event_get(hal_aci_data_t *p_aci_data)
 void hal_aci_tl_init(aci_pins_t *a_pins)
 {
   received_data.buffer[0] = 0;
-  
+
   m_aci_pins_set(a_pins);
-  
+
   /*
   The SPI lines used are mapped directly to the hardware SPI
   MISO MOSI and SCK
   Change here if the pins are mapped differently
-  
+
   The SPI library assumes that the hardware pins are used
   */
   SPI.begin();
@@ -231,9 +231,9 @@ void hal_aci_tl_init(aci_pins_t *a_pins)
   SPI.setDataMode(SPI_MODE0);
 
 
-  
+
   /* initialize aci cmd queue */
-  m_aci_q_init(&aci_tx_q);  
+  m_aci_q_init(&aci_tx_q);
   m_aci_q_init(&aci_rx_q);
 
   //Configure the IO lines
@@ -242,43 +242,43 @@ void hal_aci_tl_init(aci_pins_t *a_pins)
 
   if (UNUSED != a_pins->active_pin)
   {
-	pinMode(a_pins->active_pin,	INPUT);  
+	pinMode(a_pins->active_pin,	INPUT);
   }
-  
+
 
   if (UNUSED != a_pins->reset_pin)
   {
 	pinMode(a_pins->reset_pin,	OUTPUT);
-	
+
 	if (REDBEARLAB_SHIELD_V1_1 == a_pins->board_name)
 	{
 		//The reset for this board is inverted and has a Power On Reset
 		//circuit that takes about 100ms to trigger the reset
 		digitalWrite(a_pins->reset_pin, 1);
 		delay(100);
-		digitalWrite(a_pins->reset_pin, 0);		
+		digitalWrite(a_pins->reset_pin, 0);
 	}
 	else
 	{
 		digitalWrite(a_pins->reset_pin, 1);
-		digitalWrite(a_pins->reset_pin, 0);		
+		digitalWrite(a_pins->reset_pin, 0);
 		digitalWrite(a_pins->reset_pin, 1);
 	}
-	
+
   }
-  
-  
+
+
   digitalWrite(a_pins->miso_pin, 0);
   digitalWrite(a_pins->mosi_pin, 0);
   digitalWrite(a_pins->reqn_pin, 1);
-  digitalWrite(a_pins->sck_pin,  0);  
-  
+  digitalWrite(a_pins->sck_pin,  0);
+
   delay(30); //Wait for the nRF8001 to get hold of its lines - the lines float for a few ms after the reset
-  
+
   //Attach the interrupt to the RDYN line as requested by the caller
   if (a_pins->interface_is_interrupt)
   {
-	attachInterrupt(a_pins->interrupt_number, m_rdy_line_handle, LOW); // We use the LOW level of the RDYN line as the atmega328 can wakeup from sleep only on LOW  
+	attachInterrupt(a_pins->interrupt_number, m_rdy_line_handle, LOW); // We use the LOW level of the RDYN line as the atmega328 can wakeup from sleep only on LOW
   }
 }
 
@@ -301,10 +301,10 @@ bool hal_aci_tl_send(hal_aci_data_t *p_aci_cmd)
 
   if (true == aci_debug_print)
   {
-    Serial.print("C");
+    Serial.print(F("C"));
     m_print_aci_data(p_aci_cmd);
   }
-  
+
   digitalWrite(a_pins_local_ptr->reqn_pin, 0);
   return ret_val;
 }
@@ -319,11 +319,11 @@ hal_aci_data_t * hal_aci_tl_poll_get(void)
   hal_aci_data_t data_to_send;
 
 
- 
-    
+
+
 
   digitalWrite(a_pins_local_ptr->reqn_pin, 0);
-  
+
   // Receive from queue
   if (m_aci_q_dequeue(&aci_tx_q, &data_to_send) == false)
   {
@@ -331,9 +331,9 @@ hal_aci_data_t * hal_aci_tl_poll_get(void)
     data_to_send.status_byte = 0;
     data_to_send.buffer[0] = 0;
   }
-  
+
   //Change this if your mcu has DMA for the master SPI
-  
+
   // Send length, receive header
   byte_sent_cnt = 0;
   received_data.status_byte = spi_readwrite(data_to_send.buffer[byte_sent_cnt++]);
@@ -346,7 +346,7 @@ hal_aci_data_t * hal_aci_tl_poll_get(void)
   else
   {
     // Set the maximum to the biggest size. One command byte is already sent
-    max_bytes = (received_data.buffer[0] > (data_to_send.buffer[0] - 1)) 
+    max_bytes = (received_data.buffer[0] > (data_to_send.buffer[0] - 1))
       ? received_data.buffer[0] : (data_to_send.buffer[0] - 1);
   }
 
@@ -355,7 +355,7 @@ hal_aci_data_t * hal_aci_tl_poll_get(void)
     max_bytes = HAL_ACI_MAX_LENGTH;
   }
 
-  // Transmit/receive the rest of the packet 
+  // Transmit/receive the rest of the packet
   for (byte_cnt = 0; byte_cnt < max_bytes; byte_cnt++)
   {
     received_data.buffer[byte_cnt+1] =  spi_readwrite(data_to_send.buffer[byte_sent_cnt++]);
@@ -364,7 +364,7 @@ hal_aci_data_t * hal_aci_tl_poll_get(void)
   digitalWrite(a_pins_local_ptr->reqn_pin, 1);
 
   //RDYN should follow the REQN line in approx 100ns
-  
+
 #if defined(__SAM3X8E__)
   // nothing here, but we need to do as this, compiler bug?
 #else
@@ -372,17 +372,17 @@ hal_aci_data_t * hal_aci_tl_poll_get(void)
 #endif
   if (a_pins_local_ptr->interface_is_interrupt)
   {
-	attachInterrupt(a_pins_local_ptr->interrupt_number, m_rdy_line_handle, LOW);	  
+	attachInterrupt(a_pins_local_ptr->interrupt_number, m_rdy_line_handle, LOW);
   }
 
 
-  
+
   if (false == m_aci_q_is_empty(&aci_tx_q))
   {
-    //Lower the REQN line to start a new ACI transaction         
-    digitalWrite(a_pins_local_ptr->reqn_pin, 0); 
+    //Lower the REQN line to start a new ACI transaction
+    digitalWrite(a_pins_local_ptr->reqn_pin, 0);
   }
-  
+
   /* valid Rx available or transmit finished*/
   return (&received_data);
 }
@@ -403,5 +403,5 @@ void m_aci_q_flush(void)
 
 void m_aci_pins_set(aci_pins_t *a_pins_ptr)
 {
-  a_pins_local_ptr = a_pins_ptr;	
+  a_pins_local_ptr = a_pins_ptr;
 }

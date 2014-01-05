@@ -13,14 +13,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #ifndef _BLUECAP_H
 #define _BLUECAP_H
 
-#define DEBUG
-
-#ifdef DEBUG
-  #define DLOG(...) Serial.println(__VA_ARGS__)
-#else
-  #define DLOG(...)
-#endif
-
 void bcSetName(char *name);
 void bcBegin();
 void bcWrite(unsigned char data);
