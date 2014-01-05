@@ -10,13 +10,13 @@
  *
  * $LastChangedRevision$
  */
-
+  
 #include <avr/pgmspace.h>
-#include "lib_aci.h"
+#include <lib_aci.h>
 #include "aci_setup.h"
 
 
-// aci_struct that will contain
+// aci_struct that will contain 
 // total initial credits
 // current credit
 // current state of the aci (setup/standby/active/sleep)
@@ -42,14 +42,14 @@ extern hal_aci_data_t msg_to_send;
 /***************************************************************************/
 void aci_setup_fill(aci_state_t *aci_stat, uint8_t *num_cmd_offset)
 {
-
+    
   while (*num_cmd_offset < aci_stat->aci_setup_info.num_setup_msgs)
   {
     //Copy the setup ACI message from Flash to RAM
     //Add 2 bytes to the length byte for status byte, length for the total number of bytes
-    memcpy_P(&msg_to_send, &(aci_stat->aci_setup_info.setup_msgs[*num_cmd_offset]),
-              pgm_read_byte_near(&(aci_stat->aci_setup_info.setup_msgs[*num_cmd_offset].buffer[0]))+2);
-
+    memcpy_P(&msg_to_send, &(aci_stat->aci_setup_info.setup_msgs[*num_cmd_offset]), 
+              pgm_read_byte_near(&(aci_stat->aci_setup_info.setup_msgs[*num_cmd_offset].buffer[0]))+2); 
+    
     //Put the Setup ACI message in the command queue
     if (!hal_aci_tl_send(&msg_to_send))
     {
@@ -57,72 +57,72 @@ void aci_setup_fill(aci_state_t *aci_stat, uint8_t *num_cmd_offset)
 		// *num_cmd_offset is now pointing to the index of the Setup command that did not get sent
 		return;
     }
-
+    
     (*num_cmd_offset)++;
   }
-
+ 
 }
 
-
+  
 
 aci_status_code_t do_aci_setup(aci_state_t *aci_stat)
 {
   uint8_t setup_offset     = 0;
   uint16_t i               = 0x0000;
   aci_evt_t * aci_evt      = NULL;
-
+  
   /*
   We are using the same buffer since we are copying the contents of the buffer when queuing and immediately processing the
   buffer when receiving
   */
   hal_aci_evt_t  *aci_data = (hal_aci_evt_t *)&msg_to_send;
-
-
+  
+  
   aci_evt->params.cmd_rsp.cmd_status = ACI_STATUS_ERROR_CRC_MISMATCH;
-
+ 
   while (aci_evt->params.cmd_rsp.cmd_status != ACI_STATUS_TRANSACTION_COMPLETE)
-  {
+  {	  
 	if (setup_offset < aci_stat->aci_setup_info.num_setup_msgs)
 	{
 		aci_setup_fill(aci_stat,  &setup_offset);
 	}
 
-	i++; //i is used as a guard counter, if this counter overflows, there is an error
+	i++; //i is used as a guard counter, if this counter overflows, there is an error	
 	if (i > 0xFFFE)
 	{
-		return ACI_STATUS_ERROR_INTERNAL;
+		return ACI_STATUS_ERROR_INTERNAL;	
 	}
-
+	
     if (true == lib_aci_event_get(aci_stat, aci_data))
     {
 		  aci_evt = &(aci_data->evt);
-
+		  
 		  if (ACI_EVT_CMD_RSP != aci_evt->evt_opcode )
 		  {
 			  //Got something other than a command response evt -> Error
 			  return ACI_STATUS_ERROR_INTERNAL;
-		  }
-
+		  }      
+      
 		  switch (aci_evt->params.cmd_rsp.cmd_status)
 		  {
 			  case ACI_STATUS_TRANSACTION_CONTINUE:
 			  //Go back to the the top of the loop so the queue can be filled up again
 			  break;
-
+			  
 			  case ACI_STATUS_TRANSACTION_COMPLETE:
 			  //Break out of the while loop when this status code appears
 			  break;
-
+			  
 			  default:
 			  //Any other status code is an error
 			  return (aci_status_code_t )aci_evt->params.cmd_rsp.cmd_status;
-			  break;
-		  }
+			  break;			  
+		  } 
 	}
   }
-
+  
   return (aci_status_code_t)aci_evt->params.cmd_rsp.cmd_status;
 }
-
-
+  
+  
 
