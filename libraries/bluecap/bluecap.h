@@ -13,15 +13,19 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #ifndef _BLUECAP_H
 #define _BLUECAP_H
 
-void bcSetName(char *name);
-void bcBegin();
-void bcWrite(unsigned char data);
-void bcWriteBytes(unsigned char *data, unsigned char len);
-void bcDoEvents();
-int bcRead();
-unsigned char bcAvailable();
-unsigned char bcConnected(void);
-void bcSetPins(uint8_t reqn, uint8_t rdyn);
+class BlueCap {
+public:
+  BlueCap();
+  void setPins(uint8_t reqn, uint8_t rdyn);
+  void begin();
+  void write(unsigned char data);
+  void writeBytes(unsigned char *data, unsigned char len);
+  void doEvents();
+  void processEvents();
+  int read();
+  unsigned char available();
+  unsigned char connected(void);
+};
 
 #endif
 

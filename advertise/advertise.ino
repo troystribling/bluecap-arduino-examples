@@ -1,16 +1,19 @@
 // advertise.ino
-// adverise device. the least that can be done
+// adverise device. the simplest that can be done
+
 #include <SPI.h>
 #include "bluecap.h"
 #include "dlog.h"
 
+BlueCap ble;
+
 void setup() {
   Serial.begin(9600);
-  bcBegin();
+  ble.begin();
 }
 
 void loop() {
-  bcDoEvents();
+  ble.doEvents();
 }
 
 

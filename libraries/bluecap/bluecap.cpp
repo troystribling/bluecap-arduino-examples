@@ -1,7 +1,6 @@
 #include <avr/pgmspace.h>
 #include <SPI.h>
 
-//#include<ble_system.h>
 #include "bluecap.h"
 #include "nordic/boards.h"
 #include "nordic/lib_aci.h"
@@ -70,23 +69,15 @@ static unsigned char is_connected = 0;
 
 static uint8_t reqn_pin = 9, rdyn_pin = 8;
 
-void bcSetPins(uint8_t reqn, uint8_t rdyn) {
+BlueCap::BlueCap() {
+}
+
+void BlueCap::setPins(uint8_t reqn, uint8_t rdyn) {
 	reqn_pin = reqn;
 	rdyn_pin = rdyn;
 }
 
-void bcSetName(char* name) {
-    unsigned char len=0;
-
-    len = strlen(name);
-
-    if(len > 10)
-        DLOG(F("the new name is too long"));
-    else
-       strcpy(device_name, name);
-}
-
-void bcBegin() {
+void BlueCap::begin() {
 	if (NULL != services_pipe_type_mapping) {
 		aci_state.aci_setup_info.services_pipe_type_mapping = &services_pipe_type_mapping[0];
 	}
@@ -130,7 +121,7 @@ void bcBegin() {
 	delay(100);
 }
 
-void bcWrite(unsigned char data) {
+void BlueCap::write(unsigned char data) {
 	if(tx_buffer_len == MAX_TX_BUFF) {
 			return;
 	}
@@ -138,13 +129,13 @@ void bcWrite(unsigned char data) {
 	tx_buffer_len++;
 }
 
-void bcWriteBytes(unsigned char *data, uint8_t len) {
+void BlueCap::writeBytes(unsigned char *data, uint8_t len) {
   for (int i = 0; i < len; i++) {
-    bcWrite(data[i]);
+    this->write(data[i]);
   }
 }
 
-int bcRead() {
+int BlueCap::read() {
 	int data;
 	if(rx_buffer_len == 0) return -1;
 	if(p_before == &rx_buff[MAX_RX_BUFF]) {
@@ -156,15 +147,15 @@ int bcRead() {
 	return data;
 }
 
-unsigned char bcAvailable() {
+unsigned char BlueCap::available() {
 	return rx_buffer_len;
 }
 
-unsigned char bcConnected() {
+unsigned char BlueCap::connected() {
     return is_connected;
 }
 
-static void bcProcessEvents() {
+void BlueCap::processEvents() {
 	// We enter the if statement only when there is a ACI event available to be processed
 	if (lib_aci_event_get(&aci_state, &aci_data)) {
 		aci_evt_t  *aci_evt;
@@ -281,7 +272,7 @@ static void bcProcessEvents() {
 	}
 }
 
-void bcDoEvents() {
+void BlueCap::doEvents() {
 	if (lib_aci_is_pipe_available(&aci_state, PIPE_UART_OVER_BTLE_UART_TX_TX)) {
 		if(tx_buffer_len > 0) {
 			unsigned char Index = 0;
@@ -300,7 +291,7 @@ void bcDoEvents() {
 				DLOG(aci_state.data_credit_available,DEC);
 				ack = 0;
 				while (!ack)
-					bcProcessEvents();
+					this->processEvents();
 			}
 
 				if(true == lib_aci_send_data(PIPE_UART_OVER_BTLE_UART_TX_TX,& tx_buff[Index], tx_buffer_len)) {
@@ -316,9 +307,9 @@ void bcDoEvents() {
 				DLOG(aci_state.data_credit_available,DEC);
 				ack = 0;
 				while (!ack)
-					bcProcessEvents();
+					this->processEvents();
 		}
 	}
-	bcProcessEvents();
+	this->processEvents();
 }
 
