@@ -14,17 +14,32 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #define _BLUECAP_H
 
 class BlueCap {
+
 public:
+
+  BlueCap(char* name);
   BlueCap();
-  void setPins(uint8_t reqn, uint8_t rdyn);
+  ~BlueCap();
+
   void begin();
-  void write(unsigned char data);
-  void writeBytes(unsigned char *data, unsigned char len);
   void doEvents();
   void processEvents();
+
   int read();
+  void write(unsigned char data);
+  void writeBytes(unsigned char *data, unsigned char len);
+
   unsigned char available();
   unsigned char connected(void);
+
+  void setDeviceName(char* name);
+  void setPins(uint8_t reqn, uint8_t rdyn);
+
+private:
+
+  char* deviceName;
+
+  void init(char* name);
 };
 
 #endif

@@ -11,8 +11,9 @@
 #undef PROGMEM
 #define PROGMEM __attribute__(( section(".progmem.data") ))
 
-#define MAX_TX_BUFF 64
-#define MAX_RX_BUFF 64
+#define MAX_TX_BUFF 	64
+#define MAX_RX_BUFF 	64
+#define MAX_NAME_SIZE 10
 
 volatile byte ack = 0;
 
@@ -31,8 +32,6 @@ However this removes the need to do the setup of the nRF8001 on every reset.*/
 
 /* Store the setup for the nRF8001 in the flash of the AVR to save on RAM */
 static hal_aci_data_t setup_msgs[NB_SETUP_MESSAGES] PROGMEM = SETUP_MESSAGES_CONTENT;
-
-static char device_name[11] = "BLE Shield";
 
 /*aci_struct that will contain :
 total initial credits
@@ -69,12 +68,17 @@ static unsigned char is_connected = 0;
 
 static uint8_t reqn_pin = 9, rdyn_pin = 8;
 
-BlueCap::BlueCap() {
+// public methods
+BlueCap::BlueCap(char* name) {
+	init(name);
 }
 
-void BlueCap::setPins(uint8_t reqn, uint8_t rdyn) {
-	reqn_pin = reqn;
-	rdyn_pin = rdyn;
+BlueCap::BlueCap() {
+	init("BlueCap");
+}
+
+BlueCap::~BlueCap() {
+	free(deviceName);
 }
 
 void BlueCap::begin() {
@@ -131,7 +135,7 @@ void BlueCap::write(unsigned char data) {
 
 void BlueCap::writeBytes(unsigned char *data, uint8_t len) {
   for (int i = 0; i < len; i++) {
-    this->write(data[i]);
+    write(data[i]);
   }
 }
 
@@ -178,7 +182,7 @@ void BlueCap::processEvents() {
 						DLOG(F("Evt Device Started: Standby"));
 						//Looking for an iPhone by sending radio advertisements
 						//When an iPhone connects to us we will get an ACI_EVT_CONNECTED event from the nRF8001
-						lib_aci_set_local_data(&aci_state, PIPE_GAP_DEVICE_NAME_SET , (uint8_t *)&device_name , strlen(device_name));
+						lib_aci_set_local_data(&aci_state, PIPE_GAP_DEVICE_NAME_SET , (uint8_t *)deviceName , strlen(deviceName));
 						lib_aci_connect(180/* in seconds */, 0x0050 /* advertising interval 50ms*/);
 						DLOG(F("Advertising started"));
 						break;
@@ -291,7 +295,7 @@ void BlueCap::doEvents() {
 				DLOG(aci_state.data_credit_available,DEC);
 				ack = 0;
 				while (!ack)
-					this->processEvents();
+					processEvents();
 			}
 
 				if(true == lib_aci_send_data(PIPE_UART_OVER_BTLE_UART_TX_TX,& tx_buff[Index], tx_buffer_len)) {
@@ -307,9 +311,28 @@ void BlueCap::doEvents() {
 				DLOG(aci_state.data_credit_available,DEC);
 				ack = 0;
 				while (!ack)
-					this->processEvents();
+					processEvents();
 		}
 	}
-	this->processEvents();
+	processEvents();
+}
+
+// getters/setters
+void BlueCap::setPins(uint8_t reqn, uint8_t rdyn) {
+	reqn_pin = reqn;
+	rdyn_pin = rdyn;
+}
+
+void BlueCap::setDeviceName(char* name) {
+	if (strlen(name) <= MAX_NAME_SIZE) {
+		strcpy(deviceName, name);
+	}
+}
+
+
+// private methods
+void BlueCap::init(char* name) {
+	deviceName = (char*)malloc(MAX_NAME_SIZE + 1);
+	setDeviceName(name);
 }
 
