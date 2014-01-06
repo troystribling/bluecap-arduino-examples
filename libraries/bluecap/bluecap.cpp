@@ -70,7 +70,21 @@ static uint8_t reqn_pin = 9, rdyn_pin = 8;
 
 // public methods
 BlueCap::BlueCap(char* name) {
-	init(name);
+	init(name, NULL, 0, NULL, 0);
+}
+
+BlueCap::BlueCap(char*           name,
+          			 hal_aci_data_t* messages,
+          			 int             messagesCount) {
+	init(name, messages, messagesCount, NULL, 0);
+}
+
+BlueCap::BlueCap(char*                         name,
+          			 hal_aci_data_t*               messages,
+          			 int                           messagesCount,
+          			 services_pipe_type_mapping_t* mapping,
+          			 int                           mappingCount) {
+	init(name, messages, messagesCount, mapping, mappingCount);
 }
 
 BlueCap::~BlueCap() {
@@ -314,11 +328,6 @@ void BlueCap::doEvents() {
 }
 
 // getters/setters
-void BlueCap::setPins(uint8_t reqn, uint8_t rdyn) {
-	reqn_pin = reqn;
-	rdyn_pin = rdyn;
-}
-
 void BlueCap::setDeviceName(char* name) {
 	if (strlen(name) > MAX_NAME_SIZE) {
 		name[MAX_NAME_SIZE] = '\0';
@@ -326,10 +335,28 @@ void BlueCap::setDeviceName(char* name) {
 	strcpy(deviceName, name);
 }
 
+void BlueCap::setServicePipeTypeMapping(services_pipe_type_mapping_t* mapping, int count) {
+	servicesPipeTypeMapping = mapping;
+	numberOfPipes = count;
+}
+
+void BlueCap::setSetUpMessages(hal_aci_data_t* messages, int count) {
+	setUpMessages = messages;
+	numberOfSetupMessages = count;
+}
 
 // private methods
-void BlueCap::init(char* name) {
+void BlueCap::init(char*                         name,
+          				 hal_aci_data_t*               messages,
+          				 int                           messagesCount,
+          				 services_pipe_type_mapping_t* mapping,
+          				 int                           mappingCount) {
+
 	deviceName = (char*)malloc(MAX_NAME_SIZE + 1);
+	setUpMessages = messages;
+	numberOfSetupMessages = messagesCount;
+	servicesPipeTypeMapping = mapping;
+	numberOfPipes = mappingCount;
 	setDeviceName(name);
 }
 

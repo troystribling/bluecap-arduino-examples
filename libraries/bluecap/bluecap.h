@@ -13,11 +13,21 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #ifndef _BLUECAP_H
 #define _BLUECAP_H
 
+#include "nordic/lib_aci.h"
+
 class BlueCap {
 
 public:
 
   BlueCap(char* name);
+  BlueCap(char*           name,
+          hal_aci_data_t* messages,
+          int             messagesCount);
+  BlueCap(char*                         name,
+          hal_aci_data_t*               messages,
+          int                           messagesCount,
+          services_pipe_type_mapping_t* mapping,
+          int                           mappingCount);
   ~BlueCap();
 
   void begin();
@@ -32,13 +42,24 @@ public:
   unsigned char connected(void);
 
   void setDeviceName(char* name);
-  void setPins(uint8_t reqn, uint8_t rdyn);
+  void setServicePipeTypeMapping(services_pipe_type_mapping_t* mapping, int count);
+  void setSetUpMessages(hal_aci_data_t* messages, int count);
 
 private:
 
-  char* deviceName;
+  services_pipe_type_mapping_t*   servicesPipeTypeMapping;
+  int                             numberOfPipes;
+  hal_aci_data_t*                 setUpMessages;
+  int                             numberOfSetupMessages;
+  char*                           deviceName;
 
-  void init(char* name);
+private:
+
+  void init(char*                         name,
+            hal_aci_data_t*               messages,
+            int                           messagesCount,
+            services_pipe_type_mapping_t* mapping,
+            int                           mappingCount);
 };
 
 #endif
