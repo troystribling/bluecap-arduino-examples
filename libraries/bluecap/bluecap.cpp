@@ -1,12 +1,11 @@
-#include <avr/pgmspace.h>
 #include <SPI.h>
 
 #include "bluecap.h"
 #include "nordic/boards.h"
 #include "nordic/lib_aci.h"
 #include "nordic/aci_setup.h"
-#include "services.h"
 #include "dlog.h"
+#include "services.h"
 
 #undef PROGMEM
 #define PROGMEM __attribute__(( section(".progmem.data") ))
@@ -16,22 +15,6 @@
 #define MAX_NAME_SIZE 10
 
 volatile byte ack = 0;
-
-/* Put the nRF8001 setup in the RAM of the nRF8001.*/
-/* Include the services_lock.h to put the setup in the OTP memory of the nRF8001.
-This would mean that the setup cannot be changed once put in.
-However this removes the need to do the setup of the nRF8001 on every reset.*/
-
-#ifdef SERVICES_PIPE_TYPE_MAPPING_CONTENT
-    static services_pipe_type_mapping_t
-        services_pipe_type_mapping[NUMBER_OF_PIPES] = SERVICES_PIPE_TYPE_MAPPING_CONTENT;
-#else
-    #define NUMBER_OF_PIPES 0
-    static services_pipe_type_mapping_t * services_pipe_type_mapping = NULL;
-#endif
-
-/* Store the setup for the nRF8001 in the flash of the AVR to save on RAM */
-static hal_aci_data_t setup_msgs[NB_SETUP_MESSAGES] PROGMEM = SETUP_MESSAGES_CONTENT;
 
 /*aci_struct that will contain :
 total initial credits
@@ -92,21 +75,16 @@ BlueCap::~BlueCap() {
 }
 
 void BlueCap::begin() {
-	if (NULL != services_pipe_type_mapping) {
-		aci_state.aci_setup_info.services_pipe_type_mapping = &services_pipe_type_mapping[0];
-	}
-	else {
-		aci_state.aci_setup_info.services_pipe_type_mapping = NULL;
-	 }
-	aci_state.aci_setup_info.number_of_pipes    = NUMBER_OF_PIPES;
-	aci_state.aci_setup_info.setup_msgs         = setup_msgs;
-	aci_state.aci_setup_info.num_setup_msgs     = NB_SETUP_MESSAGES;
+	aci_state.aci_setup_info.services_pipe_type_mapping = servicesPipeTypeMapping;
+	aci_state.aci_setup_info.number_of_pipes    				= numberOfPipes;
+	aci_state.aci_setup_info.setup_msgs         				= setUpMessages;
+	aci_state.aci_setup_info.num_setup_msgs     				= numberOfSetupMessages;
 
 		/*
 	Tell the ACI library, the MCU to nRF8001 pin connections.
 	The Active pin is optional and can be marked UNUSED
 	*/
-	aci_state.aci_pins.board_name = REDBEARLAB_SHIELD_V1_1; //See board.h for details
+	aci_state.aci_pins.board_name = REDBEARLAB_SHIELD_V1_1;
 	aci_state.aci_pins.reqn_pin   = reqn_pin;
 	aci_state.aci_pins.rdyn_pin   = rdyn_pin;
 	aci_state.aci_pins.mosi_pin   = MOSI;
