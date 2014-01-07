@@ -21,7 +21,7 @@
                 <Indicate>false</Indicate>
                 <Broadcast>false</Broadcast>
             </Properties>
-            <SetPipe>false</SetPipe>
+            <SetPipe>true</SetPipe>
             <AckIsAuto>false</AckIsAuto>
             <PresentationFormatDescriptor Value="0000" Exponent="0" Format="25" NameSpace="01" Unit="0000"/>
             <PeriodForReadingThisCharacteristic>0</PeriodForReadingThisCharacteristic>
@@ -42,7 +42,7 @@
                 <Indicate>false</Indicate>
                 <Broadcast>false</Broadcast>
             </Properties>
-            <SetPipe>false</SetPipe>
+            <SetPipe>true</SetPipe>
             <AckIsAuto>false</AckIsAuto>
             <PresentationFormatDescriptor Value="0000" Exponent="0" Format="4" NameSpace="01" Unit="0000"/>
             <PeriodForReadingThisCharacteristic>0</PeriodForReadingThisCharacteristic>
@@ -113,7 +113,7 @@
                 <Indicate>false</Indicate>
                 <Broadcast>false</Broadcast>
             </Properties>
-            <SetPipe>false</SetPipe>
+            <SetPipe>true</SetPipe>
             <AckIsAuto>false</AckIsAuto>
             <PresentationFormatDescriptor Value="0000" Exponent="0" Format="1" NameSpace="01" Unit="0000"/>
             <PeriodForReadingThisCharacteristic>0</PeriodForReadingThisCharacteristic>
@@ -122,8 +122,8 @@
     </Service>
     <Gapsettings>
         <Name>BlueCap</Name>
-        <DeviceNameWriteLength>10</DeviceNameWriteLength>
-        <LocalPipeOnDeviceName>true</LocalPipeOnDeviceName>
+        <DeviceNameWriteLength>0</DeviceNameWriteLength>
+        <LocalPipeOnDeviceName>false</LocalPipeOnDeviceName>
         <DeviceNameShortLength>0</DeviceNameShortLength>
         <Apperance>0000</Apperance>
         <SecurityLevel>0</SecurityLevel>
@@ -155,6 +155,10 @@
         <CustomAdTypes>
             <AdType index="1">
                 <Type>1</Type>
+                <Value></Value>
+            </AdType>
+            <AdType index="2">
+                <Type>18</Type>
                 <Value></Value>
             </AdType>
         </CustomAdTypes>

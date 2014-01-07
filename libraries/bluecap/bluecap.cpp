@@ -52,26 +52,23 @@ static unsigned char is_connected = 0;
 static uint8_t reqn_pin = 9, rdyn_pin = 8;
 
 // public methods
-BlueCap::BlueCap(char* name) {
-	init(name, NULL, 0, NULL, 0);
+BlueCap::BlueCap() {
+	init(NULL, 0, NULL, 0);
 }
 
-BlueCap::BlueCap(char*           name,
-          			 hal_aci_data_t* messages,
+BlueCap::BlueCap(hal_aci_data_t* messages,
           			 int             messagesCount) {
 	init(name, messages, messagesCount, NULL, 0);
 }
 
-BlueCap::BlueCap(char*                         name,
-          			 hal_aci_data_t*               messages,
+BlueCap::BlueCap(hal_aci_data_t*               messages,
           			 int                           messagesCount,
           			 services_pipe_type_mapping_t* mapping,
           			 int                           mappingCount) {
-	init(name, messages, messagesCount, mapping, mappingCount);
+	init(messages, messagesCount, mapping, mappingCount);
 }
 
 BlueCap::~BlueCap() {
-	free(deviceName);
 }
 
 void BlueCap::begin() {
@@ -148,48 +145,36 @@ unsigned char BlueCap::connected() {
 }
 
 void BlueCap::processEvents() {
-	// We enter the if statement only when there is a ACI event available to be processed
 	if (lib_aci_event_get(&aci_state, &aci_data)) {
 		aci_evt_t  *aci_evt;
 		aci_evt = &aci_data.evt;
 		switch(aci_evt->evt_opcode) {
-			/* As soon as you reset the nRF8001 you will get an ACI Device Started Event */
 			case ACI_EVT_DEVICE_STARTED:
 				aci_state.data_credit_total = aci_evt->params.device_started.credit_available;
 
 				switch(aci_evt->params.device_started.device_mode) {
 					case ACI_DEVICE_SETUP:
-						/* When the device is in the setup mode*/
 						DLOG(F("Evt Device Started: Setup"));
-						if (ACI_STATUS_TRANSACTION_COMPLETE != do_aci_setup(&aci_state))
-						{
+						if (ACI_STATUS_TRANSACTION_COMPLETE != do_aci_setup(&aci_state)) {
 							DLOG(F("Error in ACI Setup"));
 						}
 						break;
 					case ACI_DEVICE_STANDBY:
 						DLOG(F("Evt Device Started: Standby"));
-						//Looking for an iPhone by sending radio advertisements
-						//When an iPhone connects to us we will get an ACI_EVT_CONNECTED event from the nRF8001
-						lib_aci_set_local_data(&aci_state, PIPE_GAP_DEVICE_NAME_SET , (uint8_t *)deviceName , strlen(deviceName));
 						lib_aci_connect(180/* in seconds */, 0x0050 /* advertising interval 50ms*/);
 						DLOG(F("Advertising started"));
 						break;
 				}
-				break; //ACI Device Started Event
+				break;
 
 			case ACI_EVT_CMD_RSP:
-				//If an ACI command response event comes with an error -> stop
 				if (ACI_STATUS_SUCCESS != aci_evt->params.cmd_rsp.cmd_status) {
-					//ACI ReadDynamicData and ACI WriteDynamicData will have status codes of
-					//TRANSACTION_CONTINUE and TRANSACTION_COMPLETE
-					//all other ACI commands will have status code of ACI_STATUS_SCUCCESS for a successful command
 					DLOG(F("ACI Command "));
 					DLOG(aci_evt->params.cmd_rsp.cmd_opcode, HEX);
 					DLOG(F("Evt Cmd respone: Error. Arduino is in an while(1); loop"));
 					while (1);
 				}
 				if (ACI_CMD_GET_DEVICE_VERSION == aci_evt->params.cmd_rsp.cmd_opcode) {
-					//Store the version and configuration information of the nRF8001 in the Hardware Revision String Characteristic
 					lib_aci_set_local_data(&aci_state, PIPE_DEVICE_INFORMATION_HARDWARE_REVISION_STRING_SET,
 					(uint8_t *)&(aci_evt->params.cmd_rsp.params.get_device_version), sizeof(aci_evt_cmd_rsp_params_get_device_version_t));
 				}
@@ -199,15 +184,13 @@ void BlueCap::processEvents() {
 				is_connected = 1;
 				DLOG(F("Evt Connected"));
 				aci_state.data_credit_available = aci_state.data_credit_total;
-				/*Get the device version of the nRF8001 and store it in the Hardware Revision String*/
 				lib_aci_device_version();
 				break;
 
 			case ACI_EVT_PIPE_STATUS:
 				DLOG(F("Evt Pipe Status"));
 				if (lib_aci_is_pipe_available(&aci_state, PIPE_UART_OVER_BTLE_UART_TX_TX) && (false == timing_change_done)) {
-					lib_aci_change_timing_GAP_PPCP(); // change the timing on the link as specified in the nRFgo studio -> nRF8001 conf. -> GAP.
-																					// Used to increase or decrease bandwidth
+					lib_aci_change_timing_GAP_PPCP();
 					timing_change_done = true;
 				}
 				break;
@@ -286,31 +269,23 @@ void BlueCap::doEvents() {
 					processEvents();
 			}
 
-				if(true == lib_aci_send_data(PIPE_UART_OVER_BTLE_UART_TX_TX,& tx_buff[Index], tx_buffer_len)) {
-					DLOG(F("data transmmit success!  Length: "));
-					DLOG(tx_buffer_len, DEC);
-				}
-				else {
-					DLOG(F("data transmmit fail !"));
-				}
-				tx_buffer_len = 0;
-				aci_state.data_credit_available--;
-				DLOG(F("Data Credit available: "));
-				DLOG(aci_state.data_credit_available,DEC);
-				ack = 0;
-				while (!ack)
-					processEvents();
+			if(true == lib_aci_send_data(PIPE_UART_OVER_BTLE_UART_TX_TX,& tx_buff[Index], tx_buffer_len)) {
+				DLOG(F("data transmmit success!  Length: "));
+				DLOG(tx_buffer_len, DEC);
+			}
+			else {
+				DLOG(F("data transmmit fail !"));
+			}
+			tx_buffer_len = 0;
+			aci_state.data_credit_available--;
+			DLOG(F("Data Credit available: "));
+			DLOG(aci_state.data_credit_available,DEC);
+			ack = 0;
+			while (!ack)
+				processEvents();
 		}
 	}
 	processEvents();
-}
-
-// getters/setters
-void BlueCap::setDeviceName(char* name) {
-	if (strlen(name) > MAX_NAME_SIZE) {
-		name[MAX_NAME_SIZE] = '\0';
-	}
-	strcpy(deviceName, name);
 }
 
 void BlueCap::setServicePipeTypeMapping(services_pipe_type_mapping_t* mapping, int count) {
@@ -324,13 +299,11 @@ void BlueCap::setSetUpMessages(hal_aci_data_t* messages, int count) {
 }
 
 // private methods
-void BlueCap::init(char*                         name,
-          				 hal_aci_data_t*               messages,
+void BlueCap::init(hal_aci_data_t*               messages,
           				 int                           messagesCount,
           				 services_pipe_type_mapping_t* mapping,
           				 int                           mappingCount) {
 
-	deviceName = (char*)malloc(MAX_NAME_SIZE + 1);
 	setUpMessages = messages;
 	numberOfSetupMessages = messagesCount;
 	servicesPipeTypeMapping = mapping;

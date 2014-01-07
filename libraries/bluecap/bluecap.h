@@ -19,12 +19,10 @@ class BlueCap {
 
 public:
 
-  BlueCap(char* name);
-  BlueCap(char*           name,
-          hal_aci_data_t* messages,
+  BlueCap();
+  BlueCap(hal_aci_data_t* messages,
           int             messagesCount);
-  BlueCap(char*                         name,
-          hal_aci_data_t*               messages,
+  BlueCap(hal_aci_data_t*               messages,
           int                           messagesCount,
           services_pipe_type_mapping_t* mapping,
           int                           mappingCount);
@@ -41,9 +39,10 @@ public:
   unsigned char available();
   unsigned char connected(void);
 
-  void setDeviceName(char* name);
   void setServicePipeTypeMapping(services_pipe_type_mapping_t* mapping, int count);
   void setSetUpMessages(hal_aci_data_t* messages, int count);
+
+protected:
 
 private:
 
@@ -51,12 +50,10 @@ private:
   int                             numberOfPipes;
   hal_aci_data_t*                 setUpMessages;
   int                             numberOfSetupMessages;
-  char*                           deviceName;
 
 private:
 
-  void init(char*                         name,
-            hal_aci_data_t*               messages,
+  void init(hal_aci_data_t*               messages,
             int                           messagesCount,
             services_pipe_type_mapping_t* mapping,
             int                           mappingCount);
