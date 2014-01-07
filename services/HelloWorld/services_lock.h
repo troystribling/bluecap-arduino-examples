@@ -37,6 +37,10 @@
 #include "hal_platform.h" 
 #include "aci.h"
 
+// You have now chosen to upload the configuration to OTP on the device.
+// This will result in a device that you can not modify afterwards. If this is your intention,
+// remove this comment and the #error below
+#error Generating configuration for OTP. Please verify usage by removing this error message from include file.
 
 #define SETUP_ID 0
 #define SETUP_FORMAT 3 /** nRF8001 D */
@@ -194,7 +198,7 @@
     },\
     {0x00,\
         {\
-            0x06,0x06,0xf0,0x00,0x03,0x87,0xfa,\
+            0x06,0x06,0xf0,0x00,0x83,0x16,0x72,\
         },\
     },\
 }
