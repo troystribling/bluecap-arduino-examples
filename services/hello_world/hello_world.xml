@@ -121,7 +121,7 @@
         </Characteristic>
     </Service>
     <Gapsettings>
-        <Name>BlueCap</Name>
+        <Name>Hello</Name>
         <DeviceNameWriteLength>0</DeviceNameWriteLength>
         <LocalPipeOnDeviceName>false</LocalPipeOnDeviceName>
         <DeviceNameShortLength>0</DeviceNameShortLength>
