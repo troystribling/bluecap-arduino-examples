@@ -1,6 +1,6 @@
 #include <SPI.h>
 
-#include "bluecap.h"
+#include "blue_cap_peripheral.h"
 #include "nordic/boards.h"
 #include "nordic/lib_aci.h"
 #include "nordic/aci_setup.h"
@@ -52,26 +52,26 @@ static unsigned char is_connected = 0;
 static uint8_t reqn_pin = 9, rdyn_pin = 8;
 
 // public methods
-BlueCap::BlueCap() {
+BlueCapPeripheral::BlueCapPeripheral() {
 	init(NULL, 0, NULL, 0);
 }
 
-BlueCap::BlueCap(hal_aci_data_t* messages,
-          			 int             messagesCount) {
-	init(name, messages, messagesCount, NULL, 0);
+BlueCapPeripheral::BlueCapPeripheral(hal_aci_data_t* messages,
+          			 										 int             messagesCount) {
+	init(messages, messagesCount, NULL, 0);
 }
 
-BlueCap::BlueCap(hal_aci_data_t*               messages,
-          			 int                           messagesCount,
-          			 services_pipe_type_mapping_t* mapping,
-          			 int                           mappingCount) {
+BlueCapPeripheral::BlueCapPeripheral(hal_aci_data_t*               messages,
+          			 										 int                           messagesCount,
+          			 										 services_pipe_type_mapping_t* mapping,
+          			 										 int                           mappingCount) {
 	init(messages, messagesCount, mapping, mappingCount);
 }
 
-BlueCap::~BlueCap() {
+BlueCapPeripheral::~BlueCapPeripheral() {
 }
 
-void BlueCap::begin() {
+void BlueCapPeripheral::begin() {
 	aci_state.aci_setup_info.services_pipe_type_mapping = servicesPipeTypeMapping;
 	aci_state.aci_setup_info.number_of_pipes    				= numberOfPipes;
 	aci_state.aci_setup_info.setup_msgs         				= setUpMessages;
@@ -110,7 +110,7 @@ void BlueCap::begin() {
 	delay(100);
 }
 
-void BlueCap::write(unsigned char data) {
+void BlueCapPeripheral::write(unsigned char data) {
 	if(tx_buffer_len == MAX_TX_BUFF) {
 			return;
 	}
@@ -118,13 +118,13 @@ void BlueCap::write(unsigned char data) {
 	tx_buffer_len++;
 }
 
-void BlueCap::writeBytes(unsigned char *data, uint8_t len) {
+void BlueCapPeripheral::writeBytes(unsigned char *data, uint8_t len) {
   for (int i = 0; i < len; i++) {
     write(data[i]);
   }
 }
 
-int BlueCap::read() {
+int BlueCapPeripheral::read() {
 	int data;
 	if(rx_buffer_len == 0) return -1;
 	if(p_before == &rx_buff[MAX_RX_BUFF]) {
@@ -136,15 +136,79 @@ int BlueCap::read() {
 	return data;
 }
 
-unsigned char BlueCap::available() {
+unsigned char BlueCapPeripheral::available() {
 	return rx_buffer_len;
 }
 
-unsigned char BlueCap::connected() {
+unsigned char BlueCapPeripheral::connected() {
     return is_connected;
 }
 
-void BlueCap::processEvents() {
+void BlueCapPeripheral::doEvents() {
+	if (lib_aci_is_pipe_available(&aci_state, PIPE_UART_OVER_BTLE_UART_TX_TX)) {
+		if(tx_buffer_len > 0) {
+			unsigned char Index = 0;
+			while(tx_buffer_len > 20) {
+				if(true == lib_aci_send_data(PIPE_UART_OVER_BTLE_UART_TX_TX, &tx_buff[Index], 20)) {
+					DLOG(F("data transmmit success!  Length: "));
+					DLOG(20, DEC);
+				}
+				else {
+					DLOG("data transmmit fail !");
+				}
+				tx_buffer_len -= 20;
+				Index += 20;
+				aci_state.data_credit_available--;
+				DLOG(F("Data Credit available: "));
+				DLOG(aci_state.data_credit_available,DEC);
+				ack = 0;
+				while (!ack)
+					processEvents();
+			}
+
+			if(true == lib_aci_send_data(PIPE_UART_OVER_BTLE_UART_TX_TX,& tx_buff[Index], tx_buffer_len)) {
+				DLOG(F("data transmmit success!  Length: "));
+				DLOG(tx_buffer_len, DEC);
+			}
+			else {
+				DLOG(F("data transmmit fail !"));
+			}
+			tx_buffer_len = 0;
+			aci_state.data_credit_available--;
+			DLOG(F("Data Credit available: "));
+			DLOG(aci_state.data_credit_available,DEC);
+			ack = 0;
+			while (!ack)
+				processEvents();
+		}
+	}
+	processEvents();
+}
+
+void BlueCapPeripheral::setServicePipeTypeMapping(services_pipe_type_mapping_t* mapping, int count) {
+	servicesPipeTypeMapping = mapping;
+	numberOfPipes = count;
+}
+
+void BlueCapPeripheral::setSetUpMessages(hal_aci_data_t* messages, int count) {
+	setUpMessages = messages;
+	numberOfSetupMessages = count;
+}
+
+// private methods
+void BlueCapPeripheral::init(hal_aci_data_t*               messages,
+          				 int                           messagesCount,
+          				 services_pipe_type_mapping_t* mapping,
+          				 int                           mappingCount) {
+
+	setUpMessages = messages;
+	numberOfSetupMessages = messagesCount;
+	servicesPipeTypeMapping = mapping;
+	numberOfPipes = mappingCount;
+	setDeviceName(name);
+}
+
+void BlueCapPeripheral::processEvents() {
 	if (lib_aci_event_get(&aci_state, &aci_data)) {
 		aci_evt_t  *aci_evt;
 		aci_evt = &aci_data.evt;
@@ -245,69 +309,5 @@ void BlueCap::processEvents() {
 				break;
 		}
 	}
-}
-
-void BlueCap::doEvents() {
-	if (lib_aci_is_pipe_available(&aci_state, PIPE_UART_OVER_BTLE_UART_TX_TX)) {
-		if(tx_buffer_len > 0) {
-			unsigned char Index = 0;
-			while(tx_buffer_len > 20) {
-				if(true == lib_aci_send_data(PIPE_UART_OVER_BTLE_UART_TX_TX, &tx_buff[Index], 20)) {
-					DLOG(F("data transmmit success!  Length: "));
-					DLOG(20, DEC);
-				}
-				else {
-					DLOG("data transmmit fail !");
-				}
-				tx_buffer_len -= 20;
-				Index += 20;
-				aci_state.data_credit_available--;
-				DLOG(F("Data Credit available: "));
-				DLOG(aci_state.data_credit_available,DEC);
-				ack = 0;
-				while (!ack)
-					processEvents();
-			}
-
-			if(true == lib_aci_send_data(PIPE_UART_OVER_BTLE_UART_TX_TX,& tx_buff[Index], tx_buffer_len)) {
-				DLOG(F("data transmmit success!  Length: "));
-				DLOG(tx_buffer_len, DEC);
-			}
-			else {
-				DLOG(F("data transmmit fail !"));
-			}
-			tx_buffer_len = 0;
-			aci_state.data_credit_available--;
-			DLOG(F("Data Credit available: "));
-			DLOG(aci_state.data_credit_available,DEC);
-			ack = 0;
-			while (!ack)
-				processEvents();
-		}
-	}
-	processEvents();
-}
-
-void BlueCap::setServicePipeTypeMapping(services_pipe_type_mapping_t* mapping, int count) {
-	servicesPipeTypeMapping = mapping;
-	numberOfPipes = count;
-}
-
-void BlueCap::setSetUpMessages(hal_aci_data_t* messages, int count) {
-	setUpMessages = messages;
-	numberOfSetupMessages = count;
-}
-
-// private methods
-void BlueCap::init(hal_aci_data_t*               messages,
-          				 int                           messagesCount,
-          				 services_pipe_type_mapping_t* mapping,
-          				 int                           mappingCount) {
-
-	setUpMessages = messages;
-	numberOfSetupMessages = messagesCount;
-	servicesPipeTypeMapping = mapping;
-	numberOfPipes = mappingCount;
-	setDeviceName(name);
 }
 

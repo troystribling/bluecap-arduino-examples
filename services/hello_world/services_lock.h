@@ -72,40 +72,6 @@
 #define GAP_PPCP_SLAVE_LATENCY 0
 #define GAP_PPCP_CONN_TIMEOUT 0xffff /** Connection Supervision timeout multiplier as a multiple of 10msec, 0xFFFF means no specific value requested */
 
-/** @brief do a set_local_data for PIPE_HELLO_GREETING_SET
- *  @param src source buffer to send data from.
- *             Presentation format: UTF-8 string
- *  @param size the number of bytes to send. Maximum size is 20
- *  @details use this function to do a set_local_data for PIPE_HELLO_GREETING_SET. If no transaction are currently
- *  running, the set will be immediate, otherwise, it will be done at the end of the current transaction
- *  when services_update_pipes will be called.
- */
-void services_set_hello_greeting(void *src, int size);
-
-/** @brief do a set_local_data for PIPE_HELLO_COUNT_SET
- *  @param src source buffer to send data from
- *  @param size the number of bytes to send. Maximum size is 2
- *  @details use this function to do a set_local_data for PIPE_HELLO_COUNT_SET. If no transaction are currently
- *  running, the set will be immediate, otherwise, it will be done at the end of the current transaction
- *  when services_update_pipes will be called.
- */
-void services_set_hello_count(void *src, int size);
-
-/** @brief do a set_local_data for PIPE_TX_POWER_TX_POWER_LEVEL_SET
- *  @param src the value to send
- *  @details use this function to do a set_local_data for PIPE_TX_POWER_TX_POWER_LEVEL_SET. If no transaction are currently
- *  running, the set will be immediate, otherwise, it will be done at the end of the current transaction
- *  when services_update_pipes will be called.
- */
-void services_set_tx_power_tx_power_level(uint8_t src);
-
-/** @brief function to trig pending transaction on pipes
- *  @details This function check for each pipe if it has a pending transaction (send/rx_request/ack)
- *   and if so executes this transaction.
- *   This function should be called in the APP_RUN state of the process function of the application.
- */
-void services_update_pipes(void);
-
 #define NB_SETUP_MESSAGES 25
 #define SETUP_MESSAGES_CONTENT {\
     {0x00,\
