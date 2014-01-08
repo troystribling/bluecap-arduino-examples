@@ -16,8 +16,8 @@ public:
                     int                           mappingCount);
   ~BlueCapPeripheral();
 
-  void begin();
-  void doEvents();
+  void start();
+  void listen();
 
   int read();
   void write(unsigned char data);

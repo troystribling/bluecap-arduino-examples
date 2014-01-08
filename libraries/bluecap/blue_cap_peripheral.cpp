@@ -144,7 +144,7 @@ unsigned char BlueCapPeripheral::connected() {
     return is_connected;
 }
 
-void BlueCapPeripheral::doEvents() {
+void BlueCapPeripheral::listen() {
 	if (lib_aci_is_pipe_available(&aci_state, PIPE_UART_OVER_BTLE_UART_TX_TX)) {
 		if(tx_buffer_len > 0) {
 			unsigned char Index = 0;
