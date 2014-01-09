@@ -5,7 +5,7 @@
     <Device>nRF8001_Dx</Device>
     <Service Type="local" PrimaryService="true">
         <Name>UART over BTLE</Name>
-        <Uuid BaseUUID="713D0000503E4C75BA943148F18D941E" BaseUUIDName="Custom UART">aaaa</Uuid>
+        <Uuid BaseUUID="713D0000503E4C75BA943148F18D941E" BaseUUIDName="Custom UART">0003</Uuid>
         <Characteristic>
             <Name>UART RX</Name>
             <Uuid BaseUUID="713D0000503E4C75BA943148F18D941E" BaseUUIDName="Custom UART">0003</Uuid>
@@ -132,7 +132,7 @@
         <AddServiceUpdateCharacteristic>false</AddServiceUpdateCharacteristic>
         <AddServiceUpdateCharacteristicPipe>false</AddServiceUpdateCharacteristicPipe>
         <ServiceToAdvertise>
-            <Uuid BaseUUID="713D0000503E4C75BA943148F18D941E" BaseUUIDName="Custom UART">aaaa</Uuid>
+            <Uuid BaseUUID="713D0000503E4C75BA943148F18D941E" BaseUUIDName="Custom UART">0003</Uuid>
         </ServiceToAdvertise>
         <CustomAdTypes>
             <AdType index="1">
