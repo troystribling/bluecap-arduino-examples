@@ -16,7 +16,7 @@ public:
                     int                           mappingCount);
   ~BlueCapPeripheral();
 
-  void start();
+  void begin();
   void listen();
 
   int read();
@@ -45,7 +45,7 @@ private:
             services_pipe_type_mapping_t* mapping,
             int                           mappingCount);
 
-  void processEvents();
+  void writeBuffers();
 };
 
 #endif

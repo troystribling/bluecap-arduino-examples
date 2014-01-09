@@ -5,7 +5,6 @@
 #include "nordic/lib_aci.h"
 #include "nordic/aci_setup.h"
 #include "dlog.h"
-#include "services.h"
 
 #undef PROGMEM
 #define PROGMEM __attribute__(( section(".progmem.data") ))
@@ -110,105 +109,7 @@ void BlueCapPeripheral::begin() {
 	delay(100);
 }
 
-void BlueCapPeripheral::write(unsigned char data) {
-	if(tx_buffer_len == MAX_TX_BUFF) {
-			return;
-	}
-	tx_buff[tx_buffer_len] = data;
-	tx_buffer_len++;
-}
-
-void BlueCapPeripheral::writeBytes(unsigned char *data, uint8_t len) {
-  for (int i = 0; i < len; i++) {
-    write(data[i]);
-  }
-}
-
-int BlueCapPeripheral::read() {
-	int data;
-	if(rx_buffer_len == 0) return -1;
-	if(p_before == &rx_buff[MAX_RX_BUFF]) {
-			p_before = &rx_buff[0];
-	}
-	data = *p_before;
-	p_before ++;
-	rx_buffer_len--;
-	return data;
-}
-
-unsigned char BlueCapPeripheral::available() {
-	return rx_buffer_len;
-}
-
-unsigned char BlueCapPeripheral::connected() {
-    return is_connected;
-}
-
 void BlueCapPeripheral::listen() {
-	if (lib_aci_is_pipe_available(&aci_state, PIPE_UART_OVER_BTLE_UART_TX_TX)) {
-		if(tx_buffer_len > 0) {
-			unsigned char Index = 0;
-			while(tx_buffer_len > 20) {
-				if(true == lib_aci_send_data(PIPE_UART_OVER_BTLE_UART_TX_TX, &tx_buff[Index], 20)) {
-					DLOG(F("data transmmit success!  Length: "));
-					DLOG(20, DEC);
-				}
-				else {
-					DLOG("data transmmit fail !");
-				}
-				tx_buffer_len -= 20;
-				Index += 20;
-				aci_state.data_credit_available--;
-				DLOG(F("Data Credit available: "));
-				DLOG(aci_state.data_credit_available,DEC);
-				ack = 0;
-				while (!ack)
-					processEvents();
-			}
-
-			if(true == lib_aci_send_data(PIPE_UART_OVER_BTLE_UART_TX_TX,& tx_buff[Index], tx_buffer_len)) {
-				DLOG(F("data transmmit success!  Length: "));
-				DLOG(tx_buffer_len, DEC);
-			}
-			else {
-				DLOG(F("data transmmit fail !"));
-			}
-			tx_buffer_len = 0;
-			aci_state.data_credit_available--;
-			DLOG(F("Data Credit available: "));
-			DLOG(aci_state.data_credit_available,DEC);
-			ack = 0;
-			while (!ack)
-				processEvents();
-		}
-	}
-	processEvents();
-}
-
-void BlueCapPeripheral::setServicePipeTypeMapping(services_pipe_type_mapping_t* mapping, int count) {
-	servicesPipeTypeMapping = mapping;
-	numberOfPipes = count;
-}
-
-void BlueCapPeripheral::setSetUpMessages(hal_aci_data_t* messages, int count) {
-	setUpMessages = messages;
-	numberOfSetupMessages = count;
-}
-
-// private methods
-void BlueCapPeripheral::init(hal_aci_data_t*               messages,
-          				 int                           messagesCount,
-          				 services_pipe_type_mapping_t* mapping,
-          				 int                           mappingCount) {
-
-	setUpMessages = messages;
-	numberOfSetupMessages = messagesCount;
-	servicesPipeTypeMapping = mapping;
-	numberOfPipes = mappingCount;
-	setDeviceName(name);
-}
-
-void BlueCapPeripheral::processEvents() {
 	if (lib_aci_event_get(&aci_state, &aci_data)) {
 		aci_evt_t  *aci_evt;
 		aci_evt = &aci_data.evt;
@@ -239,8 +140,8 @@ void BlueCapPeripheral::processEvents() {
 					while (1);
 				}
 				if (ACI_CMD_GET_DEVICE_VERSION == aci_evt->params.cmd_rsp.cmd_opcode) {
-					lib_aci_set_local_data(&aci_state, PIPE_DEVICE_INFORMATION_HARDWARE_REVISION_STRING_SET,
-					(uint8_t *)&(aci_evt->params.cmd_rsp.params.get_device_version), sizeof(aci_evt_cmd_rsp_params_get_device_version_t));
+					// lib_aci_set_local_data(&aci_state, PIPE_DEVICE_INFORMATION_HARDWARE_REVISION_STRING_SET,
+					// (uint8_t *)&(aci_evt->params.cmd_rsp.params.get_device_version), sizeof(aci_evt_cmd_rsp_params_get_device_version_t));
 				}
 				break;
 
@@ -253,10 +154,10 @@ void BlueCapPeripheral::processEvents() {
 
 			case ACI_EVT_PIPE_STATUS:
 				DLOG(F("Evt Pipe Status"));
-				if (lib_aci_is_pipe_available(&aci_state, PIPE_UART_OVER_BTLE_UART_TX_TX) && (false == timing_change_done)) {
-					lib_aci_change_timing_GAP_PPCP();
-					timing_change_done = true;
-				}
+				// if (lib_aci_is_pipe_available(&aci_state, PIPE_UART_OVER_BTLE_UART_TX_TX) && (false == timing_change_done)) {
+				// 	lib_aci_change_timing_GAP_PPCP();
+				// 	timing_change_done = true;
+				// }
 				break;
 
 			case ACI_EVT_TIMING:
@@ -310,4 +211,102 @@ void BlueCapPeripheral::processEvents() {
 		}
 	}
 }
+
+int BlueCapPeripheral::read() {
+	int data;
+	if(rx_buffer_len == 0) return -1;
+	if(p_before == &rx_buff[MAX_RX_BUFF]) {
+			p_before = &rx_buff[0];
+	}
+	data = *p_before;
+	p_before ++;
+	rx_buffer_len--;
+	return data;
+}
+
+void BlueCapPeripheral::write(unsigned char data) {
+	if(tx_buffer_len == MAX_TX_BUFF) {
+			return;
+	}
+	tx_buff[tx_buffer_len] = data;
+	tx_buffer_len++;
+}
+
+void BlueCapPeripheral::writeBytes(unsigned char *data, uint8_t len) {
+  for (int i = 0; i < len; i++) {
+    write(data[i]);
+  }
+}
+
+unsigned char BlueCapPeripheral::available() {
+	return rx_buffer_len;
+}
+
+unsigned char BlueCapPeripheral::connected() {
+    return is_connected;
+}
+
+void BlueCapPeripheral::setServicePipeTypeMapping(services_pipe_type_mapping_t* mapping, int count) {
+	servicesPipeTypeMapping = mapping;
+	numberOfPipes = count;
+}
+
+void BlueCapPeripheral::setSetUpMessages(hal_aci_data_t* messages, int count) {
+	setUpMessages = messages;
+	numberOfSetupMessages = count;
+}
+
+// private methods
+void BlueCapPeripheral::init(hal_aci_data_t*               messages,
+          				 int                           messagesCount,
+          				 services_pipe_type_mapping_t* mapping,
+          				 int                           mappingCount) {
+
+	setUpMessages = messages;
+	numberOfSetupMessages = messagesCount;
+	servicesPipeTypeMapping = mapping;
+	numberOfPipes = mappingCount;
+}
+
+void BlueCapPeripheral::writeBuffers() {
+	// if (lib_aci_is_pipe_available(&aci_state, PIPE_UART_OVER_BTLE_UART_TX_TX)) {
+	// 	if(tx_buffer_len > 0) {
+	// 		unsigned char Index = 0;
+	// 		while(tx_buffer_len > 20) {
+	// 			if(true == lib_aci_send_data(PIPE_UART_OVER_BTLE_UART_TX_TX, &tx_buff[Index], 20)) {
+	// 				DLOG(F("data transmmit success!  Length: "));
+	// 				DLOG(20, DEC);
+	// 			}
+	// 			else {
+	// 				DLOG("data transmmit fail !");
+	// 			}
+	// 			tx_buffer_len -= 20;
+	// 			Index += 20;
+	// 			aci_state.data_credit_available--;
+	// 			DLOG(F("Data Credit available: "));
+	// 			DLOG(aci_state.data_credit_available,DEC);
+	// 			ack = 0;
+	// 			while (!ack)
+	// 				processEvents();
+	// 		}
+
+	// 		if(true == lib_aci_send_data(PIPE_UART_OVER_BTLE_UART_TX_TX,& tx_buff[Index], tx_buffer_len)) {
+	// 			DLOG(F("data transmmit success!  Length: "));
+	// 			DLOG(tx_buffer_len, DEC);
+	// 		}
+	// 		else {
+	// 			DLOG(F("data transmmit fail !"));
+	// 		}
+	// 		tx_buffer_len = 0;
+	// 		aci_state.data_credit_available--;
+	// 		DLOG(F("Data Credit available: "));
+	// 		DLOG(aci_state.data_credit_available,DEC);
+	// 		ack = 0;
+	// 		while (!ack)
+	// 			processEvents();
+	// 	}
+	// }
+	// processEvents();
+}
+
 
