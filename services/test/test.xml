@@ -4,47 +4,47 @@
     <SetupId>0</SetupId>
     <Device>nRF8001_Dx</Device>
     <Service Type="local" PrimaryService="true">
-        <Name>Hello</Name>
-        <Uuid BaseUUID="2f0a000069aaf3163e784194989a6c1a" BaseUUIDName="gnos.us Base UUID">0000</Uuid>
+        <Name>UART over BTLE</Name>
+        <Uuid BaseUUID="713D0000503E4C75BA943148F18D941E" BaseUUIDName="Custom UART">aaaa</Uuid>
         <Characteristic>
-            <Name>Greeting</Name>
-            <Uuid BaseUUID="2f0a000069aaf3163e784194989a6c1a" BaseUUIDName="gnos.us Base UUID">0001</Uuid>
-            <DefaultValue>Hello</DefaultValue>
-            <UsePresentationFormat>1</UsePresentationFormat>
+            <Name>UART RX</Name>
+            <Uuid BaseUUID="713D0000503E4C75BA943148F18D941E" BaseUUIDName="Custom UART">0003</Uuid>
+            <DefaultValue></DefaultValue>
+            <UsePresentationFormat>0</UsePresentationFormat>
             <MaxDataLength>20</MaxDataLength>
-            <AttributeLenType>1</AttributeLenType>
+            <AttributeLenType>2</AttributeLenType>
             <ForceOpen>false</ForceOpen>
             <Properties>
-                <WriteWithoutResponse>false</WriteWithoutResponse>
+                <WriteWithoutResponse>true</WriteWithoutResponse>
                 <Write>false</Write>
                 <Notify>false</Notify>
                 <Indicate>false</Indicate>
                 <Broadcast>false</Broadcast>
             </Properties>
-            <SetPipe>true</SetPipe>
+            <SetPipe>false</SetPipe>
             <AckIsAuto>false</AckIsAuto>
-            <PresentationFormatDescriptor Value="0000" Exponent="0" Format="25" NameSpace="01" Unit="0000"/>
+            <PresentationFormatDescriptor Value="0000" Exponent="0" Format="1" NameSpace="01" Unit="0000"/>
             <PeriodForReadingThisCharacteristic>0</PeriodForReadingThisCharacteristic>
             <PeriodForProperties/>
         </Characteristic>
         <Characteristic>
-            <Name>Count</Name>
-            <Uuid BaseUUID="2f0a000069aaf3163e784194989a6c1a" BaseUUIDName="gnos.us Base UUID">0002</Uuid>
-            <DefaultValue>0</DefaultValue>
+            <Name>UART TX</Name>
+            <Uuid BaseUUID="713D0000503E4C75BA943148F18D941E" BaseUUIDName="Custom UART">0002</Uuid>
+            <DefaultValue></DefaultValue>
             <UsePresentationFormat>0</UsePresentationFormat>
-            <MaxDataLength>2</MaxDataLength>
-            <AttributeLenType>1</AttributeLenType>
+            <MaxDataLength>20</MaxDataLength>
+            <AttributeLenType>2</AttributeLenType>
             <ForceOpen>false</ForceOpen>
             <Properties>
                 <WriteWithoutResponse>false</WriteWithoutResponse>
                 <Write>false</Write>
-                <Notify>false</Notify>
+                <Notify>true</Notify>
                 <Indicate>false</Indicate>
                 <Broadcast>false</Broadcast>
             </Properties>
-            <SetPipe>true</SetPipe>
+            <SetPipe>false</SetPipe>
             <AckIsAuto>false</AckIsAuto>
-            <PresentationFormatDescriptor Value="0000" Exponent="0" Format="4" NameSpace="01" Unit="0000"/>
+            <PresentationFormatDescriptor Value="0000" Exponent="0" Format="1" NameSpace="01" Unit="0000"/>
             <PeriodForReadingThisCharacteristic>0</PeriodForReadingThisCharacteristic>
             <PeriodForProperties/>
         </Characteristic>
@@ -53,12 +53,12 @@
         <Name>Device Information</Name>
         <Uuid>180a</Uuid>
         <Characteristic>
-            <Name>Firmware Revision String</Name>
-            <Uuid>2a26</Uuid>
-            <DefaultValue>0.01</DefaultValue>
+            <Name>Hardware Revision String</Name>
+            <Uuid>2a27</Uuid>
+            <DefaultValue>v2.0</DefaultValue>
             <UsePresentationFormat>1</UsePresentationFormat>
-            <MaxDataLength>4</MaxDataLength>
-            <AttributeLenType>1</AttributeLenType>
+            <MaxDataLength>9</MaxDataLength>
+            <AttributeLenType>2</AttributeLenType>
             <ForceOpen>false</ForceOpen>
             <Properties>
                 <WriteWithoutResponse>false</WriteWithoutResponse>
@@ -67,28 +67,7 @@
                 <Indicate>false</Indicate>
                 <Broadcast>false</Broadcast>
             </Properties>
-            <SetPipe>false</SetPipe>
-            <AckIsAuto>false</AckIsAuto>
-            <PresentationFormatDescriptor Value="0000" Exponent="0" Format="25" NameSpace="01" Unit="0000"/>
-            <PeriodForReadingThisCharacteristic>0</PeriodForReadingThisCharacteristic>
-            <PeriodForProperties/>
-        </Characteristic>
-        <Characteristic>
-            <Name>Manufacturer Name String</Name>
-            <Uuid>2a29</Uuid>
-            <DefaultValue>gnos.us</DefaultValue>
-            <UsePresentationFormat>1</UsePresentationFormat>
-            <MaxDataLength>20</MaxDataLength>
-            <AttributeLenType>1</AttributeLenType>
-            <ForceOpen>false</ForceOpen>
-            <Properties>
-                <WriteWithoutResponse>false</WriteWithoutResponse>
-                <Write>false</Write>
-                <Notify>false</Notify>
-                <Indicate>false</Indicate>
-                <Broadcast>false</Broadcast>
-            </Properties>
-            <SetPipe>false</SetPipe>
+            <SetPipe>true</SetPipe>
             <AckIsAuto>false</AckIsAuto>
             <PresentationFormatDescriptor Value="0000" Exponent="0" Format="25" NameSpace="01" Unit="0000"/>
             <PeriodForReadingThisCharacteristic>0</PeriodForReadingThisCharacteristic>
@@ -113,7 +92,7 @@
                 <Indicate>false</Indicate>
                 <Broadcast>false</Broadcast>
             </Properties>
-            <SetPipe>true</SetPipe>
+            <SetPipe>false</SetPipe>
             <AckIsAuto>false</AckIsAuto>
             <PresentationFormatDescriptor Value="0000" Exponent="0" Format="1" NameSpace="01" Unit="0000"/>
             <PeriodForReadingThisCharacteristic>0</PeriodForReadingThisCharacteristic>
@@ -122,23 +101,23 @@
     </Service>
     <Gapsettings>
         <Name>Hello</Name>
-        <DeviceNameWriteLength>0</DeviceNameWriteLength>
-        <LocalPipeOnDeviceName>false</LocalPipeOnDeviceName>
+        <DeviceNameWriteLength>10</DeviceNameWriteLength>
+        <LocalPipeOnDeviceName>true</LocalPipeOnDeviceName>
         <DeviceNameShortLength>0</DeviceNameShortLength>
         <Apperance>0000</Apperance>
         <SecurityLevel>0</SecurityLevel>
         <AuthenticationReq>0</AuthenticationReq>
         <IoCapabilities>0</IoCapabilities>
         <BondTimeout>600</BondTimeout>
-        <SecurityRequestDelay>10</SecurityRequestDelay>
+        <SecurityRequestDelay>0</SecurityRequestDelay>
         <MinimumKeySize>7</MinimumKeySize>
         <MaximumKeySize>16</MaximumKeySize>
-        <AdvertisingDataBondedBitmap>0</AdvertisingDataBondedBitmap>
-        <AdvertisingDataGeneralBitmap>5a</AdvertisingDataGeneralBitmap>
-        <AdvertisingDataBrodcastBitmap>0</AdvertisingDataBrodcastBitmap>
+        <AdvertisingDataBondedBitmap>10</AdvertisingDataBondedBitmap>
+        <AdvertisingDataGeneralBitmap>10</AdvertisingDataGeneralBitmap>
+        <AdvertisingDataBrodcastBitmap>10</AdvertisingDataBrodcastBitmap>
         <AdvertisingDataBondedScanResponseBitmap>0</AdvertisingDataBondedScanResponseBitmap>
         <AdvertisingDataGeneralScanResponseBitmap>1a</AdvertisingDataGeneralScanResponseBitmap>
-        <AdvertisingDataBrodcastScanResponseBitmap>0</AdvertisingDataBrodcastScanResponseBitmap>
+        <AdvertisingDataBrodcastScanResponseBitmap>a</AdvertisingDataBrodcastScanResponseBitmap>
         <AdvertisingDataBondedBitmapCustom>0</AdvertisingDataBondedBitmapCustom>
         <AdvertisingDataGeneralBitmapCustom>0</AdvertisingDataGeneralBitmapCustom>
         <AdvertisingDataBrodcastBitmapCustom>0</AdvertisingDataBrodcastBitmapCustom>
@@ -153,12 +132,12 @@
         <AddServiceUpdateCharacteristic>false</AddServiceUpdateCharacteristic>
         <AddServiceUpdateCharacteristicPipe>false</AddServiceUpdateCharacteristicPipe>
         <ServiceToAdvertise>
-            <Uuid BaseUUID="2f0a000069aaf3163e784194989a6c1a" BaseUUIDName="gnos.us Base UUID">0000</Uuid>
+            <Uuid BaseUUID="713D0000503E4C75BA943148F18D941E" BaseUUIDName="Custom UART">aaaa</Uuid>
         </ServiceToAdvertise>
         <CustomAdTypes>
             <AdType index="1">
-                <Type>1</Type>
-                <Value></Value>
+                <Type>19</Type>
+                <Value>0000</Value>
             </AdType>
             <AdType index="2">
                 <Type>18</Type>
@@ -180,8 +159,8 @@
         <BatteryCharge>220</BatteryCharge>
         <Master32KhzClockAccuracy>10</Master32KhzClockAccuracy>
         <ConnectionInterval>1000</ConnectionInterval>
-        <PercentOfTimeSleeping>0</PercentOfTimeSleeping>
-        <PercentOfTimeAdvertising>0</PercentOfTimeAdvertising>
+        <PercentOfTimeSleeping>10</PercentOfTimeSleeping>
+        <PercentOfTimeAdvertising>10</PercentOfTimeAdvertising>
         <AdvertisingInterval>1280</AdvertisingInterval>
     </CurrentInput>
 </Profile>

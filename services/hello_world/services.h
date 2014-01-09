@@ -63,10 +63,44 @@
   {ACI_STORE_LOCAL, ACI_SET},   \
 }
 
-#define GAP_PPCP_MAX_CONN_INT 0xffff /**< Maximum connection interval as a multiple of 1.25 msec , 0xFFFF means no specific value requested */
-#define GAP_PPCP_MIN_CONN_INT  0xffff /**< Minimum connection interval as a multiple of 1.25 msec , 0xFFFF means no specific value requested */
+#define GAP_PPCP_MAX_CONN_INT 0x12 /**< Maximum connection interval as a multiple of 1.25 msec , 0xFFFF means no specific value requested */
+#define GAP_PPCP_MIN_CONN_INT  0x6 /**< Minimum connection interval as a multiple of 1.25 msec , 0xFFFF means no specific value requested */
 #define GAP_PPCP_SLAVE_LATENCY 0
-#define GAP_PPCP_CONN_TIMEOUT 0xffff /** Connection Supervision timeout multiplier as a multiple of 10msec, 0xFFFF means no specific value requested */
+#define GAP_PPCP_CONN_TIMEOUT 0xa /** Connection Supervision timeout multiplier as a multiple of 10msec, 0xFFFF means no specific value requested */
+
+/** @brief do a set_local_data for PIPE_HELLO_GREETING_SET
+ *  @param src source buffer to send data from.
+ *             Presentation format: UTF-8 string
+ *  @param size the number of bytes to send. Maximum size is 20
+ *  @details use this function to do a set_local_data for PIPE_HELLO_GREETING_SET. If no transaction are currently
+ *  running, the set will be immediate, otherwise, it will be done at the end of the current transaction
+ *  when services_update_pipes will be called.
+ */
+void services_set_hello_greeting(void *src, int size);
+
+/** @brief do a set_local_data for PIPE_HELLO_COUNT_SET
+ *  @param src source buffer to send data from
+ *  @param size the number of bytes to send. Maximum size is 2
+ *  @details use this function to do a set_local_data for PIPE_HELLO_COUNT_SET. If no transaction are currently
+ *  running, the set will be immediate, otherwise, it will be done at the end of the current transaction
+ *  when services_update_pipes will be called.
+ */
+void services_set_hello_count(void *src, int size);
+
+/** @brief do a set_local_data for PIPE_TX_POWER_TX_POWER_LEVEL_SET
+ *  @param src the value to send
+ *  @details use this function to do a set_local_data for PIPE_TX_POWER_TX_POWER_LEVEL_SET. If no transaction are currently
+ *  running, the set will be immediate, otherwise, it will be done at the end of the current transaction
+ *  when services_update_pipes will be called.
+ */
+void services_set_tx_power_tx_power_level(uint8_t src);
+
+/** @brief function to trig pending transaction on pipes
+ *  @details This function check for each pipe if it has a pending transaction (send/rx_request/ack)
+ *   and if so executes this transaction.
+ *   This function should be called in the APP_RUN state of the process function of the application.
+ */
+void services_update_pipes(void);
 
 #define NB_SETUP_MESSAGES 25
 #define SETUP_MESSAGES_CONTENT {\
@@ -119,7 +153,7 @@
     {0x00,\
         {\
             0x1f,0x06,0x20,0x54,0x06,0x28,0x03,0x01,0x02,0x07,0x00,0x04,0x2a,0x06,0x04,0x09,0x08,0x00,0x07,0x2a,\
-            0x04,0x01,0xff,0xff,0xff,0xff,0x00,0x00,0xff,0xff,0x04,0x04,\
+            0x04,0x01,0x06,0x00,0x12,0x00,0x00,0x00,0x0a,0x00,0x04,0x04,\
         },\
     },\
     {0x00,\
@@ -210,7 +244,7 @@
     },\
     {0x00,\
         {\
-            0x06,0x06,0xf0,0x00,0x03,0x05,0xb4,\
+            0x06,0x06,0xf0,0x00,0x03,0x12,0xa6,\
         },\
     },\
 }

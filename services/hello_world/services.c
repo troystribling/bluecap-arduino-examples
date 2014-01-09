@@ -34,29 +34,65 @@
 #include "services.h"
 #include "lib_aci.h"
 
-static bool is_gap_device_name_set_requested = false;
+static bool is_hello_greeting_set_requested = false;
+static bool is_hello_count_set_requested = false;
+static bool is_tx_power_tx_power_level_set_requested = false;
 
-static void *gap_device_name_set;
-static uint8_t gap_device_name_set_size;
+static void *hello_greeting_set;
+static uint8_t hello_greeting_set_size;
+static void *hello_count_set;
+static uint8_t hello_count_set_size;
+static uint8_t tx_power_tx_power_level_set;
 
-static bool gap_device_name_update_set(void)
+static bool hello_greeting_update_set(void)
 {
-  return(lib_aci_set_local_data(PIPE_GAP_DEVICE_NAME_SET, (void*)gap_device_name_set, gap_device_name_set_size));
+  return(lib_aci_set_local_data(PIPE_HELLO_GREETING_SET, (void*)hello_greeting_set, hello_greeting_set_size));
 }
 
-void services_set_gap_device_name(void *src, int size)
+void services_set_hello_greeting(void *src, int size)
 {
-  gap_device_name_set_size = size;
-  gap_device_name_set = src;
-  is_gap_device_name_set_requested = true;
+  hello_greeting_set_size = size;
+  hello_greeting_set = src;
+  is_hello_greeting_set_requested = true;
+  services_update_pipes();
+}
+static bool hello_count_update_set(void)
+{
+  return(lib_aci_set_local_data(PIPE_HELLO_COUNT_SET, (void*)hello_count_set, hello_count_set_size));
+}
+
+void services_set_hello_count(void *src, int size)
+{
+  hello_count_set_size = size;
+  hello_count_set = src;
+  is_hello_count_set_requested = true;
+  services_update_pipes();
+}
+static bool tx_power_tx_power_level_update_set(void)
+{
+  return(lib_aci_set_local_data(PIPE_TX_POWER_TX_POWER_LEVEL_SET, (void*)&tx_power_tx_power_level_set, 1));
+}
+
+void services_set_tx_power_tx_power_level(uint8_t src)
+{
+  tx_power_tx_power_level_set = src;
+  is_tx_power_tx_power_level_set_requested = true;
   services_update_pipes();
 }
 
 void services_update_pipes(void)
 {
-  if(is_gap_device_name_set_requested)
+  if(is_hello_greeting_set_requested)
   {
-    is_gap_device_name_set_requested = !(gap_device_name_update_set());
+    is_hello_greeting_set_requested = !(hello_greeting_update_set());
+  }
+  if(is_hello_count_set_requested)
+  {
+    is_hello_count_set_requested = !(hello_count_update_set());
+  }
+  if(is_tx_power_tx_power_level_set_requested)
+  {
+    is_tx_power_tx_power_level_set_requested = !(tx_power_tx_power_level_update_set());
   }
 }
 
