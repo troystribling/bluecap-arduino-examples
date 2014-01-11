@@ -1,24 +1,40 @@
-/* Copyright (c) 2009 Nordic Semiconductor. All Rights Reserved.
+/*Copyright (c) 2013, Nordic Semiconductor ASA
+ *All rights reserved.
  *
- * The information contained herein is property of Nordic Semiconductor ASA.
- * Terms and conditions of usage are described in detail in NORDIC
- * SEMICONDUCTOR STANDARD SOFTWARE LICENSE AGREEMENT.
+ *Redistribution and use in source and binary forms, with or without modification,
+ *are permitted provided that the following conditions are met:
  *
- * Licensees are granted free, non-transferable use of the information. NO
- * WARRANTY of ANY KIND is provided. This heading must NOT be removed from
- * the file.
+ *  Redistributions of source code must retain the above copyright notice, this
+ *  list of conditions and the following disclaimer.
  *
- * $LastChangedRevision$
- */
+ *  Redistributions in binary form must reproduce the above copyright notice, this
+ *  list of conditions and the following disclaimer in the documentation and/or
+ *  other materials provided with the distribution.
+ *
+ *  Neither the name of Nordic Semiconductor ASA nor the names of its
+ *  contributors may be used to endorse or promote products derived from
+ *  this software without specific prior written permission.
+ *
+ *THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+ *ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ *ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */ 
 
 /** @file
  * @brief Interface for hal_aci_tl.
  */
-
+ 
 /** @defgroup hal_aci_tl hal_aci_tl
 @{
 @ingroup hal
-
+ 
 @brief Module for the ACI Transport Layer interface
 @details This module is responsible for sending and receiving messages over the ACI interface of the nRF8001 chip.
  The hal_aci_tl_send_cmd() can be called directly to send ACI commands.
@@ -30,7 +46,7 @@ The ACI Command is taken from the head of the command queue is sent over the SPI
 and the received ACI event is placed in the tail of the event queue.
 
 */
-
+ 
 #ifndef HAL_ACI_TL_H__
 #define HAL_ACI_TL_H__
 
@@ -45,12 +61,12 @@ and the received ACI event is placed in the tail of the event queue.
 /* The ACI_QUEUE_SIZE determines the memory usage of the system.            */
 /* Successfully tested to a ACI_QUEUE_SIZE of 4 (interrupt) and 4 (polling) */
 /***********************************************************************    */
-#define ACI_QUEUE_SIZE  4
+#define ACI_QUEUE_SIZE  2
 
 /************************************************************************/
 /* Unused nRF8001 pin                                                    */
 /************************************************************************/
-#define UNUSED		    255
+#define UNUSED		    255 
 
 /** Data type for ACI commands and events */
 typedef struct __attribute__ ((__packed__)) hal_aci_data_t{
@@ -74,21 +90,21 @@ typedef struct aci_pins_t
 	uint8_t	mosi_pin;				//Required
 	uint8_t	miso_pin;				//Required
 	uint8_t	sck_pin;				//Required
-
+	
 	uint8_t spi_clock_divider;      //Required : Clock divider on the SPI clock : nRF8001 supports a maximum clock of 3MHz
-
-
+	
+	
 	uint8_t	reset_pin;				//Recommended but optional - Set it to UNUSED when not connected
 	uint8_t active_pin;				//Optional - Set it to UNUSED when not connected
 	uint8_t optional_chip_sel_pin;  //Optional - Used only when the reqn line is required to be separate from the SPI chip select. Eg. Arduino DUE
-
+	
 	bool	interface_is_interrupt;	//Required - true = Uses interrupt on RDYN pin. false - Uses polling on RDYN pin
-
+	
 	uint8_t	interrupt_number;		//Required when using interrupts, otherwise ignored
 } aci_pins_t;
 
 /** @brief Message received hook function.
- *  @details A hook function that must be implemented by the client of this module.
+ *  @details A hook function that must be implemented by the client of this module. 
  * The function will be called by this module when a new message has been received from the nRF8001.
  *  @param received_msg Pointer to a structure containing a pointer to the received data.
  */
@@ -105,7 +121,7 @@ void hal_aci_tl_init(aci_pins_t *a_pins);
 
 /**@brief Sends an ACI command to the radio.
  *  @details
- *  This function sends an ACI command to the radio. This will memorize the pointer of the message to send and
+ *  This function sends an ACI command to the radio. This will memorize the pointer of the message to send and 
  *  lower the request line. When the device lowers the ready line, @ref hal_aci_tl_poll_rdy_line() will send the data.
  *  @param aci_buffer Pointer to the message to send.
  *  @return True if the send is started successfully, false if a transaction is already running.
@@ -114,7 +130,7 @@ bool hal_aci_tl_send(hal_aci_data_t *aci_buffer);
 
 
 /** @brief Check for pending transaction.
- *  @details
+ *  @details 
  *  Call this function from the main context at regular intervals to check if the nRF8001 RDYN line indicates a pending transaction.
  *  If a transaction is pending, this function will treat it and call the receive hook.
  */
@@ -123,7 +139,7 @@ void hal_aci_tl_poll_rdy_line(void);
 hal_aci_data_t * hal_aci_tl_poll_get(void);
 
 /** @brief Get an ACI event from the event queue
- *  @details
+ *  @details 
  *  Call this function from the main context to get an event from the ACI event queue
  *  This is called by lib_aci_event_get
  */
@@ -143,7 +159,7 @@ void m_aci_q_flush(void);
 */
 void hal_aci_debug_print(bool enable);
 
-/** @brief
+/** @brief 
  *  @details
  *
 */

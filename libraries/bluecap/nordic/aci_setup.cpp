@@ -1,14 +1,30 @@
-/* Copyright (c) 2009 Nordic Semiconductor. All Rights Reserved.
+/*Copyright (c) 2013, Nordic Semiconductor ASA
+ *All rights reserved.
  *
- * The information contained herein is property of Nordic Semiconductor ASA.
- * Terms and conditions of usage are described in detail in NORDIC
- * SEMICONDUCTOR STANDARD SOFTWARE LICENSE AGREEMENT.
+ *Redistribution and use in source and binary forms, with or without modification,
+ *are permitted provided that the following conditions are met:
  *
- * Licensees are granted free, non-transferable use of the information. NO
- * WARRANTY of ANY KIND is provided. This heading must NOT be removed from
- * the file.
+ *  Redistributions of source code must retain the above copyright notice, this
+ *  list of conditions and the following disclaimer.
  *
- * $LastChangedRevision$
+ *  Redistributions in binary form must reproduce the above copyright notice, this
+ *  list of conditions and the following disclaimer in the documentation and/or
+ *  other materials provided with the distribution.
+ *
+ *  Neither the name of Nordic Semiconductor ASA nor the names of its
+ *  contributors may be used to endorse or promote products derived from
+ *  this software without specific prior written permission.
+ *
+ *THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+ *ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ *ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
   
 #include <avr/pgmspace.h>
@@ -67,20 +83,19 @@ void aci_setup_fill(aci_state_t *aci_stat, uint8_t *num_cmd_offset)
 
 aci_status_code_t do_aci_setup(aci_state_t *aci_stat)
 {
-  uint8_t setup_offset     = 0;
-  uint16_t i               = 0x0000;
-  aci_evt_t * aci_evt      = NULL;
+  uint8_t setup_offset         = 0;
+  uint16_t i                   = 0x0000;
+  aci_evt_t * aci_evt          = NULL;
+  aci_status_code_t cmd_status = ACI_STATUS_ERROR_CRC_MISMATCH;
   
   /*
-  We are using the same buffer since we are copying the contents of the buffer when queuing and immediately processing the
-  buffer when receiving
+  We are using the same buffer since we are copying the contents of the buffer 
+  when queuing and immediately processing the buffer when receiving
   */
   hal_aci_evt_t  *aci_data = (hal_aci_evt_t *)&msg_to_send;
   
-  
-  aci_evt->params.cmd_rsp.cmd_status = ACI_STATUS_ERROR_CRC_MISMATCH;
  
-  while (aci_evt->params.cmd_rsp.cmd_status != ACI_STATUS_TRANSACTION_COMPLETE)
+  while (cmd_status != ACI_STATUS_TRANSACTION_COMPLETE)
   {	  
 	if (setup_offset < aci_stat->aci_setup_info.num_setup_msgs)
 	{
@@ -95,14 +110,16 @@ aci_status_code_t do_aci_setup(aci_state_t *aci_stat)
 	
     if (true == lib_aci_event_get(aci_stat, aci_data))
     {
-		  aci_evt = &(aci_data->evt);
+		  aci_evt    = &(aci_data->evt);
+
 		  
 		  if (ACI_EVT_CMD_RSP != aci_evt->evt_opcode )
 		  {
 			  //Got something other than a command response evt -> Error
 			  return ACI_STATUS_ERROR_INTERNAL;
-		  }      
-      
+		  }
+		        
+          cmd_status = (aci_status_code_t) aci_evt->params.cmd_rsp.cmd_status;
 		  switch (aci_evt->params.cmd_rsp.cmd_status)
 		  {
 			  case ACI_STATUS_TRANSACTION_CONTINUE:
@@ -122,7 +139,6 @@ aci_status_code_t do_aci_setup(aci_state_t *aci_stat)
   }
   
   return (aci_status_code_t)aci_evt->params.cmd_rsp.cmd_status;
-}
-  
+}  
   
 
