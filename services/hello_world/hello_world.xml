@@ -4,36 +4,61 @@
     <SetupId>0</SetupId>
     <Device>nRF8001_Dx</Device>
     <Service Type="local" PrimaryService="true">
-        <Name>UART over BTLE</Name>
-        <Uuid BaseUUID="713D0000503E4C75BA943148F18D941E" BaseUUIDName="Custom UART">0000</Uuid>
+        <Name>Hello World</Name>
+        <Uuid BaseUUID="2f0a000069aaf3163e784194989a6c1a" BaseUUIDName="gnos.us Base UUID">0000</Uuid>
         <Characteristic>
-            <Name>UART RX</Name>
-            <Uuid BaseUUID="713D0000503E4C75BA943148F18D941E" BaseUUIDName="Custom UART">0003</Uuid>
-            <DefaultValue></DefaultValue>
-            <UsePresentationFormat>0</UsePresentationFormat>
+            <Name>Greeting</Name>
+            <Uuid BaseUUID="2f0a000069aaf3163e784194989a6c1a" BaseUUIDName="gnos.us Base UUID">0001</Uuid>
+            <DefaultValue>Hello</DefaultValue>
+            <UsePresentationFormat>1</UsePresentationFormat>
             <MaxDataLength>20</MaxDataLength>
-            <AttributeLenType>2</AttributeLenType>
+            <AttributeLenType>1</AttributeLenType>
             <ForceOpen>false</ForceOpen>
             <Properties>
-                <WriteWithoutResponse>true</WriteWithoutResponse>
+                <WriteWithoutResponse>false</WriteWithoutResponse>
                 <Write>false</Write>
                 <Notify>false</Notify>
                 <Indicate>false</Indicate>
                 <Broadcast>false</Broadcast>
             </Properties>
-            <SetPipe>false</SetPipe>
+            <SetPipe>true</SetPipe>
+            <AckIsAuto>false</AckIsAuto>
+            <PresentationFormatDescriptor Value="0000" Exponent="0" Format="25" NameSpace="01" Unit="0000"/>
+            <PeriodForReadingThisCharacteristic>0</PeriodForReadingThisCharacteristic>
+            <PeriodForProperties/>
+        </Characteristic>
+        <Characteristic>
+            <Name>Count</Name>
+            <Uuid BaseUUID="2f0a000069aaf3163e784194989a6c1a" BaseUUIDName="gnos.us Base UUID">0002</Uuid>
+            <DefaultValue>0</DefaultValue>
+            <UsePresentationFormat>0</UsePresentationFormat>
+            <MaxDataLength>1</MaxDataLength>
+            <AttributeLenType>1</AttributeLenType>
+            <ForceOpen>false</ForceOpen>
+            <Properties>
+                <WriteWithoutResponse>false</WriteWithoutResponse>
+                <Write>false</Write>
+                <Notify>false</Notify>
+                <Indicate>false</Indicate>
+                <Broadcast>false</Broadcast>
+            </Properties>
+            <SetPipe>true</SetPipe>
             <AckIsAuto>false</AckIsAuto>
             <PresentationFormatDescriptor Value="0000" Exponent="0" Format="1" NameSpace="01" Unit="0000"/>
             <PeriodForReadingThisCharacteristic>0</PeriodForReadingThisCharacteristic>
             <PeriodForProperties/>
         </Characteristic>
+    </Service>
+    <Service Type="local" PrimaryService="true">
+        <Name>TX Power</Name>
+        <Uuid>1804</Uuid>
         <Characteristic>
-            <Name>UART TX</Name>
-            <Uuid BaseUUID="713D0000503E4C75BA943148F18D941E" BaseUUIDName="Custom UART">0002</Uuid>
-            <DefaultValue></DefaultValue>
+            <Name>TX Power Level</Name>
+            <Uuid>2a07</Uuid>
+            <DefaultValue>0</DefaultValue>
             <UsePresentationFormat>0</UsePresentationFormat>
-            <MaxDataLength>20</MaxDataLength>
-            <AttributeLenType>2</AttributeLenType>
+            <MaxDataLength>1</MaxDataLength>
+            <AttributeLenType>1</AttributeLenType>
             <ForceOpen>false</ForceOpen>
             <Properties>
                 <WriteWithoutResponse>false</WriteWithoutResponse>
@@ -42,7 +67,7 @@
                 <Indicate>false</Indicate>
                 <Broadcast>false</Broadcast>
             </Properties>
-            <SetPipe>false</SetPipe>
+            <SetPipe>true</SetPipe>
             <AckIsAuto>false</AckIsAuto>
             <PresentationFormatDescriptor Value="0000" Exponent="0" Format="1" NameSpace="01" Unit="0000"/>
             <PeriodForReadingThisCharacteristic>0</PeriodForReadingThisCharacteristic>
@@ -52,6 +77,69 @@
     <Service Type="local" PrimaryService="true">
         <Name>Device Information</Name>
         <Uuid>180a</Uuid>
+        <Characteristic>
+            <Name>Model Number String</Name>
+            <Uuid>2a24</Uuid>
+            <DefaultValue>0001</DefaultValue>
+            <UsePresentationFormat>1</UsePresentationFormat>
+            <MaxDataLength>8</MaxDataLength>
+            <AttributeLenType>1</AttributeLenType>
+            <ForceOpen>false</ForceOpen>
+            <Properties>
+                <WriteWithoutResponse>false</WriteWithoutResponse>
+                <Write>false</Write>
+                <Notify>false</Notify>
+                <Indicate>false</Indicate>
+                <Broadcast>false</Broadcast>
+            </Properties>
+            <SetPipe>false</SetPipe>
+            <AckIsAuto>false</AckIsAuto>
+            <PresentationFormatDescriptor Value="0000" Exponent="0" Format="25" NameSpace="01" Unit="0000"/>
+            <PeriodForReadingThisCharacteristic>0</PeriodForReadingThisCharacteristic>
+            <PeriodForProperties/>
+        </Characteristic>
+        <Characteristic>
+            <Name>Hardware Revision String</Name>
+            <Uuid>2a27</Uuid>
+            <DefaultValue>01</DefaultValue>
+            <UsePresentationFormat>1</UsePresentationFormat>
+            <MaxDataLength>2</MaxDataLength>
+            <AttributeLenType>1</AttributeLenType>
+            <ForceOpen>false</ForceOpen>
+            <Properties>
+                <WriteWithoutResponse>false</WriteWithoutResponse>
+                <Write>false</Write>
+                <Notify>false</Notify>
+                <Indicate>false</Indicate>
+                <Broadcast>false</Broadcast>
+            </Properties>
+            <SetPipe>false</SetPipe>
+            <AckIsAuto>false</AckIsAuto>
+            <PresentationFormatDescriptor Value="0000" Exponent="0" Format="25" NameSpace="01" Unit="0000"/>
+            <PeriodForReadingThisCharacteristic>0</PeriodForReadingThisCharacteristic>
+            <PeriodForProperties/>
+        </Characteristic>
+        <Characteristic>
+            <Name>Firmware Revision String</Name>
+            <Uuid>2a26</Uuid>
+            <DefaultValue>01.1</DefaultValue>
+            <UsePresentationFormat>1</UsePresentationFormat>
+            <MaxDataLength>4</MaxDataLength>
+            <AttributeLenType>1</AttributeLenType>
+            <ForceOpen>false</ForceOpen>
+            <Properties>
+                <WriteWithoutResponse>false</WriteWithoutResponse>
+                <Write>false</Write>
+                <Notify>false</Notify>
+                <Indicate>false</Indicate>
+                <Broadcast>false</Broadcast>
+            </Properties>
+            <SetPipe>false</SetPipe>
+            <AckIsAuto>false</AckIsAuto>
+            <PresentationFormatDescriptor Value="0000" Exponent="0" Format="25" NameSpace="01" Unit="0000"/>
+            <PeriodForReadingThisCharacteristic>0</PeriodForReadingThisCharacteristic>
+            <PeriodForProperties/>
+        </Characteristic>
         <Characteristic>
             <Name>Manufacturer Name String</Name>
             <Uuid>2a29</Uuid>
@@ -73,9 +161,30 @@
             <PeriodForReadingThisCharacteristic>0</PeriodForReadingThisCharacteristic>
             <PeriodForProperties/>
         </Characteristic>
+        <Characteristic>
+            <Name>Software Revision String</Name>
+            <Uuid>2a28</Uuid>
+            <DefaultValue>0.0.1</DefaultValue>
+            <UsePresentationFormat>1</UsePresentationFormat>
+            <MaxDataLength>20</MaxDataLength>
+            <AttributeLenType>2</AttributeLenType>
+            <ForceOpen>false</ForceOpen>
+            <Properties>
+                <WriteWithoutResponse>false</WriteWithoutResponse>
+                <Write>false</Write>
+                <Notify>false</Notify>
+                <Indicate>false</Indicate>
+                <Broadcast>false</Broadcast>
+            </Properties>
+            <SetPipe>false</SetPipe>
+            <AckIsAuto>false</AckIsAuto>
+            <PresentationFormatDescriptor Value="0000" Exponent="0" Format="25" NameSpace="01" Unit="0000"/>
+            <PeriodForReadingThisCharacteristic>0</PeriodForReadingThisCharacteristic>
+            <PeriodForProperties/>
+        </Characteristic>
     </Service>
     <Gapsettings>
-        <Name>Hello</Name>
+        <Name>Hello World</Name>
         <DeviceNameWriteLength>0</DeviceNameWriteLength>
         <LocalPipeOnDeviceName>false</LocalPipeOnDeviceName>
         <DeviceNameShortLength>0</DeviceNameShortLength>
@@ -84,15 +193,15 @@
         <AuthenticationReq>0</AuthenticationReq>
         <IoCapabilities>0</IoCapabilities>
         <BondTimeout>600</BondTimeout>
-        <SecurityRequestDelay>0</SecurityRequestDelay>
+        <SecurityRequestDelay>10</SecurityRequestDelay>
         <MinimumKeySize>7</MinimumKeySize>
         <MaximumKeySize>16</MaximumKeySize>
-        <AdvertisingDataBondedBitmap>10</AdvertisingDataBondedBitmap>
-        <AdvertisingDataGeneralBitmap>10</AdvertisingDataGeneralBitmap>
-        <AdvertisingDataBrodcastBitmap>10</AdvertisingDataBrodcastBitmap>
+        <AdvertisingDataBondedBitmap>0</AdvertisingDataBondedBitmap>
+        <AdvertisingDataGeneralBitmap>0</AdvertisingDataGeneralBitmap>
+        <AdvertisingDataBrodcastBitmap>0</AdvertisingDataBrodcastBitmap>
         <AdvertisingDataBondedScanResponseBitmap>0</AdvertisingDataBondedScanResponseBitmap>
-        <AdvertisingDataGeneralScanResponseBitmap>1a</AdvertisingDataGeneralScanResponseBitmap>
-        <AdvertisingDataBrodcastScanResponseBitmap>a</AdvertisingDataBrodcastScanResponseBitmap>
+        <AdvertisingDataGeneralScanResponseBitmap>0</AdvertisingDataGeneralScanResponseBitmap>
+        <AdvertisingDataBrodcastScanResponseBitmap>0</AdvertisingDataBrodcastScanResponseBitmap>
         <AdvertisingDataBondedBitmapCustom>0</AdvertisingDataBondedBitmapCustom>
         <AdvertisingDataGeneralBitmapCustom>0</AdvertisingDataGeneralBitmapCustom>
         <AdvertisingDataBrodcastBitmapCustom>0</AdvertisingDataBrodcastBitmapCustom>
@@ -106,9 +215,6 @@
         <TimeoutMultipler>10</TimeoutMultipler>
         <AddServiceUpdateCharacteristic>false</AddServiceUpdateCharacteristic>
         <AddServiceUpdateCharacteristicPipe>false</AddServiceUpdateCharacteristicPipe>
-        <ServiceToAdvertise>
-            <Uuid BaseUUID="713D0000503E4C75BA943148F18D941E" BaseUUIDName="Custom UART">0000</Uuid>
-        </ServiceToAdvertise>
         <CustomAdTypes>
             <AdType index="1">
                 <Type>19</Type>
@@ -134,8 +240,8 @@
         <BatteryCharge>220</BatteryCharge>
         <Master32KhzClockAccuracy>10</Master32KhzClockAccuracy>
         <ConnectionInterval>1000</ConnectionInterval>
-        <PercentOfTimeSleeping>10</PercentOfTimeSleeping>
-        <PercentOfTimeAdvertising>10</PercentOfTimeAdvertising>
+        <PercentOfTimeSleeping>0</PercentOfTimeSleeping>
+        <PercentOfTimeAdvertising>0</PercentOfTimeAdvertising>
         <AdvertisingInterval>1280</AdvertisingInterval>
     </CurrentInput>
 </Profile>
