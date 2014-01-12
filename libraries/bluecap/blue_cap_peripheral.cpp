@@ -116,7 +116,6 @@ void BlueCapPeripheral::listen() {
 		switch(aci_evt->evt_opcode) {
 			case ACI_EVT_DEVICE_STARTED:
 				aci_state.data_credit_total = aci_evt->params.device_started.credit_available;
-
 				switch(aci_evt->params.device_started.device_mode) {
 					case ACI_DEVICE_SETUP:
 						DLOG(F("Evt Device Started: Setup"));
@@ -133,15 +132,12 @@ void BlueCapPeripheral::listen() {
 				break;
 
 			case ACI_EVT_CMD_RSP:
+				DLOG(F("ACI Command "));
+				DLOG(aci_evt->params.cmd_rsp.cmd_opcode, HEX);
 				if (ACI_STATUS_SUCCESS != aci_evt->params.cmd_rsp.cmd_status) {
-					DLOG(F("ACI Command "));
-					DLOG(aci_evt->params.cmd_rsp.cmd_opcode, HEX);
 					DLOG(F("Evt Cmd respone: Error. Arduino is in an while(1); loop"));
 					while (1);
-				}
-				if (ACI_CMD_GET_DEVICE_VERSION == aci_evt->params.cmd_rsp.cmd_opcode) {
-					// lib_aci_set_local_data(&aci_state, PIPE_DEVICE_INFORMATION_HARDWARE_REVISION_STRING_SET,
-					// (uint8_t *)&(aci_evt->params.cmd_rsp.params.get_device_version), sizeof(aci_evt_cmd_rsp_params_get_device_version_t));
+				} else {
 				}
 				break;
 
