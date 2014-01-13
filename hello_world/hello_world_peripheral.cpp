@@ -10,6 +10,6 @@ HelloWorldPeripheral::HelloWorldPeripheral(): BlueCapPeripheral() {
   setSetUpMessages(setup_msgs, NB_SETUP_MESSAGES);
 }
 
-void HelloWorldPeripheral::onDataReceived(uint8_t characteristic_id, uint8_t* data, uint8_t length) {
+void HelloWorldPeripheral::didReceiveData(uint8_t characteristic_id, uint8_t* data, uint8_t length) {
   DLOG(F("Hello World"));
 }
