@@ -10,6 +10,8 @@ public:
 
 protected:
 
+  void onDataReceived(uint8_t characteristic_id, uint8_t* data, uint8_t length);
+
 private:
 };
 

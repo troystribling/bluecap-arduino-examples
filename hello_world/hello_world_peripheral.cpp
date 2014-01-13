@@ -9,3 +9,7 @@ HelloWorldPeripheral::HelloWorldPeripheral(): BlueCapPeripheral() {
   setServicePipeTypeMapping(services_pipe_type_mapping, NUMBER_OF_PIPES);
   setSetUpMessages(setup_msgs, NB_SETUP_MESSAGES);
 }
+
+void HelloWorldPeripheral::onDataReceived(uint8_t characteristic_id, uint8_t* data, uint8_t length) {
+  DLOG(F("Hello World"));
+}
