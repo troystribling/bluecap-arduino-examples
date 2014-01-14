@@ -13,6 +13,8 @@ protected:
   void didReceiveData(uint8_t characteristic_id, uint8_t* data, uint8_t length);
 
 private:
+
+  unsigned char     count;
 };
 
 #endif

@@ -30,7 +30,7 @@
         <Characteristic>
             <Name>Count</Name>
             <Uuid BaseUUID="2f0a000069aaf3163e784194989a6c1a" BaseUUIDName="gnos.us Base UUID">0002</Uuid>
-            <DefaultValue>0</DefaultValue>
+            <DefaultValue>5</DefaultValue>
             <UsePresentationFormat>0</UsePresentationFormat>
             <MaxDataLength>1</MaxDataLength>
             <AttributeLenType>1</AttributeLenType>
@@ -43,7 +43,7 @@
                 <Broadcast>false</Broadcast>
             </Properties>
             <SetPipe>true</SetPipe>
-            <AckIsAuto>true</AckIsAuto>
+            <AckIsAuto>false</AckIsAuto>
             <PresentationFormatDescriptor Value="0000" Exponent="0" Format="1" NameSpace="01" Unit="0000"/>
             <PeriodForReadingThisCharacteristic>0</PeriodForReadingThisCharacteristic>
             <PeriodForProperties/>
