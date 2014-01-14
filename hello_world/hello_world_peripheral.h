@@ -6,7 +6,7 @@
 class HelloWorldPeripheral : public BlueCapPeripheral {
 public:
 
-  HelloWorldPeripheral();
+  HelloWorldPeripheral(uint8_t reqn, uint8_t rdyn);
 
 protected:
 

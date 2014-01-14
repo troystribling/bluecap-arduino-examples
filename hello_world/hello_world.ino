@@ -3,7 +3,10 @@
 #include "blue_cap_peripheral.h"
 #include "hello_world_peripheral.h"
 
-HelloWorldPeripheral hello;
+#define REQN_PIN  9
+#define RDYN_PIN  8
+
+HelloWorldPeripheral hello(REQN_PIN, RDYN_PIN);
 
 void setup() {
   Serial.begin(9600);
