@@ -16,6 +16,7 @@ protected:
 private:
 
   unsigned char     count;
+
 };
 
 #endif
