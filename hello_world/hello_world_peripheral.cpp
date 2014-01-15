@@ -11,10 +11,15 @@ HelloWorldPeripheral::HelloWorldPeripheral(uint8_t reqn, uint8_t rdyn): BlueCapP
   count = 5;
 }
 
-void HelloWorldPeripheral::didReceiveData(uint8_t characteristic_id, uint8_t* data, uint8_t length) {
-  switch(characteristic_id) {
+void HelloWorldPeripheral::didReceiveData(uint8_t characteristicId, uint8_t* data, uint8_t length) {
+  switch(characteristicId) {
     case PIPE_HELLO_WORLD_COUNT_RX_ACK:
       DLOG(F("Hello World Count Update"));
+      memcpy(&count, data, 1);
       break;
   }
+}
+
+void HelloWorldPeripheral::loop() {
+  BlueCapPeripheral::loop();
 }
