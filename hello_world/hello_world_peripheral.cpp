@@ -20,9 +20,17 @@ void HelloWorldPeripheral::didReceiveData(uint8_t characteristicId, uint8_t* dat
     case PIPE_HELLO_WORLD_COUNT_RX_ACK:
       memcpy(&count, data, 1);
       if (count <= MAX_COUNT) {
-        sendAck(PIPE_HELLO_WORLD_COUNT_RX_ACK);
+        if (sendAck(PIPE_HELLO_WORLD_COUNT_RX_ACK)) {
+          DLOG(F("Hello World count ACK successful"));
+        } else {
+          DLOG(F("Hello World count ACK failed"));
+        }
       } else {
-        sendNack(PIPE_HELLO_WORLD_COUNT_RX_ACK, MAX_COUNT_EXCEEDED_ERROR_CODE);
+        if (sendNack(PIPE_HELLO_WORLD_COUNT_RX_ACK, MAX_COUNT_EXCEEDED_ERROR_CODE)) {
+          DLOG(F("Hello World count NACK successful"));
+        } else {
+          DLOG(F("Hello World count NACK failed"));
+        }
       }
       DLOG(F("Hello World Count Update"));
       DLOG(count, DEC);
