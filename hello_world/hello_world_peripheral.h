@@ -16,6 +16,8 @@ protected:
 
 private:
 
+  void getGreeting();
+
 };
 
 #endif
