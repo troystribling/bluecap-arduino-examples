@@ -3,6 +3,7 @@
 #include "dlog.h"
 #include "blue_cap_peripheral.h"
 #include "hello_world_peripheral.h"
+#include "byte_swap.h"
 
 #define REQN_PIN  9
 #define RDYN_PIN  8

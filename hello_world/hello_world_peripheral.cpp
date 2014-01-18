@@ -2,6 +2,7 @@
 #include "hello_world_peripheral.h"
 #include "dlog.h"
 #include "services.h"
+#include "byte_swap.h"
 
 #define GREETING_COUNT                12
 #define INITIAL_UPDATE_PERIOD         1000
@@ -49,12 +50,14 @@ void HelloWorldPeripheral::didReceiveError(uint8_t pipe, uint8_t) {
 }
 
 void HelloWorldPeripheral::loop() {
-  // setGreeting();
+  setGreeting();
   BlueCapPeripheral::loop();
 }
 
-void HelloWorldPeripheral::setUpdatePeriod(uint8_t* data, uint8_t length) {
-   memcpy(&updatePeriod, data, PIPE_HELLO_WORLD_UPDATE_PERIOD_RX_ACK_MAX_SIZE);
+void HelloWorldPeripheral::setUpdatePeriod(uint8_t* data, uint8_t size) {
+    uint16_t bigVal;
+    memcpy(&bigVal, data, PIPE_HELLO_WORLD_UPDATE_PERIOD_RX_ACK_MAX_SIZE);
+    updatePeriod = uint16BigToLittleEndian(bigVal);
     if (updatePeriod > MIN_UPDATE_PERIOD && updatePeriod < MAX_UPDATE_PERIOD) {
       if (sendAck(PIPE_HELLO_WORLD_UPDATE_PERIOD_RX_ACK)) {
         DLOG(F("Hello World Update Period ACK successful"));
