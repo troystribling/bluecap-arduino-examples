@@ -49,20 +49,20 @@ void HelloWorldPeripheral::didReceiveError(uint8_t pipe, uint8_t) {
 }
 
 void HelloWorldPeripheral::loop() {
-  setGreeting();
+  // setGreeting();
   BlueCapPeripheral::loop();
 }
 
 void HelloWorldPeripheral::setUpdatePeriod(uint8_t* data, uint8_t length) {
    memcpy(&updatePeriod, data, PIPE_HELLO_WORLD_UPDATE_PERIOD_RX_ACK_MAX_SIZE);
     if (updatePeriod > MIN_UPDATE_PERIOD && updatePeriod < MAX_UPDATE_PERIOD) {
-      if (sendAck(PIPE_HELLO_WORLD_UPDATE_PERIOD_RX_ACK_MAX_SIZE)) {
+      if (sendAck(PIPE_HELLO_WORLD_UPDATE_PERIOD_RX_ACK)) {
         DLOG(F("Hello World Update Period ACK successful"));
       } else {
         DLOG(F("Hello World Update Period ACK failed"));
       }
     } else {
-      if (sendNack(PIPE_HELLO_WORLD_UPDATE_PERIOD_RX_ACK_MAX_SIZE, INVALID_UPDATE_PERIOD_ERROR)) {
+      if (sendNack(PIPE_HELLO_WORLD_UPDATE_PERIOD_RX_ACK, INVALID_UPDATE_PERIOD_ERROR)) {
         DLOG(F("Hello World Update Period NACK successful"));
       } else {
         DLOG(F("Hello World Update Period NACK failed"));
@@ -74,10 +74,10 @@ void HelloWorldPeripheral::setUpdatePeriod(uint8_t* data, uint8_t length) {
 
 void HelloWorldPeripheral::setGreeting() {
   if (millis() % updatePeriod == 0) {
-    // DLOG(F("Greeting"));
-    // char* greeting = greetings[greetingIndex];
-    // DLOG(greeting);
-    // sendData(PIPE_HELLO_WORLD_GREETING_SET, (uint8_t*)greeting, strlen(greeting));
+    DLOG(F("Greeting"));
+    char* greeting = greetings[greetingIndex];
+    DLOG(greeting);
+    sendData(PIPE_HELLO_WORLD_GREETING_SET, (uint8_t*)greeting, strlen(greeting));
     greetingIndex++;
     if (greetingIndex >= GREETING_COUNT) {
       greetingIndex = 0;
