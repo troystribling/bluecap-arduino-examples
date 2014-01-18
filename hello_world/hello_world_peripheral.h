@@ -16,6 +16,9 @@ protected:
 
 private:
 
+  void setUpdatePeriod(uint8_t* data, uint8_t length);
+  void setGreeting();
+
 };
 
 #endif
