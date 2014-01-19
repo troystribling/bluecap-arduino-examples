@@ -11,8 +11,8 @@
             <Uuid BaseUUID="2f0a000069aaf3163e784194989a6c1a" BaseUUIDName="gnos.us Base UUID">0001</Uuid>
             <DefaultValue>Hello</DefaultValue>
             <UsePresentationFormat>1</UsePresentationFormat>
-            <MaxDataLength>20</MaxDataLength>
-            <AttributeLenType>1</AttributeLenType>
+            <MaxDataLength>10</MaxDataLength>
+            <AttributeLenType>2</AttributeLenType>
             <ForceOpen>false</ForceOpen>
             <Properties>
                 <WriteWithoutResponse>false</WriteWithoutResponse>
@@ -154,31 +154,6 @@
             <SetPipe>false</SetPipe>
             <AckIsAuto>false</AckIsAuto>
             <PresentationFormatDescriptor Value="0000" Exponent="0" Format="25" NameSpace="01" Unit="0000"/>
-            <PeriodForReadingThisCharacteristic>0</PeriodForReadingThisCharacteristic>
-            <PeriodForProperties/>
-        </Characteristic>
-    </Service>
-    <Service Type="local" PrimaryService="true">
-        <Name>Battery</Name>
-        <Uuid>180f</Uuid>
-        <Characteristic>
-            <Name>Battery Level</Name>
-            <Uuid>2a19</Uuid>
-            <DefaultValue>10</DefaultValue>
-            <UsePresentationFormat>0</UsePresentationFormat>
-            <MaxDataLength>1</MaxDataLength>
-            <AttributeLenType>1</AttributeLenType>
-            <ForceOpen>false</ForceOpen>
-            <Properties>
-                <WriteWithoutResponse>false</WriteWithoutResponse>
-                <Write>false</Write>
-                <Notify>true</Notify>
-                <Indicate>false</Indicate>
-                <Broadcast>false</Broadcast>
-            </Properties>
-            <SetPipe>true</SetPipe>
-            <AckIsAuto>false</AckIsAuto>
-            <PresentationFormatDescriptor Value="0000" Exponent="0" Format="1" NameSpace="01" Unit="0000"/>
             <PeriodForReadingThisCharacteristic>0</PeriodForReadingThisCharacteristic>
             <PeriodForProperties/>
         </Characteristic>

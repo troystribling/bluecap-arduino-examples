@@ -5,8 +5,8 @@
 #include "byte_swap.h"
 
 #define GREETING_COUNT                12
-#define INITIAL_UPDATE_PERIOD         1000
-#define INVALID_UPDATE_PERIOD_ERROR   1
+#define INITIAL_UPDATE_PERIOD         9000
+#define INVALID_UPDATE_PERIOD_ERROR   0x01
 #define MIN_UPDATE_PERIOD             200
 #define MAX_UPDATE_PERIOD             10000
 
@@ -49,6 +49,10 @@ void HelloWorldPeripheral::didReceiveError(uint8_t pipe, uint8_t) {
   DLOG(F("HelloWorldPeripheral"));
 }
 
+bool HelloWorldPeripheral::areAllPipesAvailable() {
+  return isPipeAvailable(PIPE_HELLO_WORLD_GREETING_TX);
+}
+
 void HelloWorldPeripheral::loop() {
   setGreeting();
   BlueCapPeripheral::loop();
@@ -57,19 +61,11 @@ void HelloWorldPeripheral::loop() {
 void HelloWorldPeripheral::setUpdatePeriod(uint8_t* data, uint8_t size) {
     uint16_t bigVal;
     memcpy(&bigVal, data, PIPE_HELLO_WORLD_UPDATE_PERIOD_RX_ACK_MAX_SIZE);
-    updatePeriod = uint16BigToLittleEndian(bigVal);
+    updatePeriod = uint16BigToHost(bigVal);
     if (updatePeriod > MIN_UPDATE_PERIOD && updatePeriod < MAX_UPDATE_PERIOD) {
-      if (sendAck(PIPE_HELLO_WORLD_UPDATE_PERIOD_RX_ACK)) {
-        DLOG(F("Hello World Update Period ACK successful"));
-      } else {
-        DLOG(F("Hello World Update Period ACK failed"));
-      }
+      sendAck(PIPE_HELLO_WORLD_UPDATE_PERIOD_RX_ACK);
     } else {
-      if (sendNack(PIPE_HELLO_WORLD_UPDATE_PERIOD_RX_ACK, INVALID_UPDATE_PERIOD_ERROR)) {
-        DLOG(F("Hello World Update Period NACK successful"));
-      } else {
-        DLOG(F("Hello World Update Period NACK failed"));
-      }
+      sendNack(PIPE_HELLO_WORLD_UPDATE_PERIOD_RX_ACK, INVALID_UPDATE_PERIOD_ERROR);
     }
     DLOG(F("Hello World Update Period Update"));
     DLOG(updatePeriod, DEC);
@@ -80,7 +76,7 @@ void HelloWorldPeripheral::setGreeting() {
     DLOG(F("Greeting"));
     char* greeting = greetings[greetingIndex];
     DLOG(greeting);
-    sendData(PIPE_HELLO_WORLD_GREETING_SET, (uint8_t*)greeting, strlen(greeting));
+    sendData(PIPE_HELLO_WORLD_GREETING_TX, (uint8_t*)greeting, strlen(greeting));
     greetingIndex++;
     if (greetingIndex >= GREETING_COUNT) {
       greetingIndex = 0;
