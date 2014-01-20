@@ -6,8 +6,8 @@
 #include "byte_swap.h"
 
 #define GREETING_COUNT                12
-#define INITIAL_UPDATE_PERIOD         9000
-#define INVALID_UPDATE_PERIOD_ERROR   0x01
+#define INITIAL_UPDATE_PERIOD         5000
+#define INVALID_UPDATE_PERIOD_ERROR   0x80
 #define MIN_UPDATE_PERIOD             200
 #define MAX_UPDATE_PERIOD             10000
 
@@ -60,13 +60,15 @@ bool HelloWorldPeripheral::arePipesAvailable() {
 }
 
 void HelloWorldPeripheral::setUpdatePeriod(uint8_t* data, uint8_t size) {
-    uint16_t bigVal;
+    uint16_t bigVal, hostVal;
     memcpy(&bigVal, data, PIPE_HELLO_WORLD_UPDATE_PERIOD_RX_ACK_MAX_SIZE);
-    updatePeriod = uint16BigToHost(bigVal);
-    if (updatePeriod > MIN_UPDATE_PERIOD && updatePeriod < MAX_UPDATE_PERIOD) {
+    hostVal = uint16BigToHost(bigVal);
+    if (hostVal > MIN_UPDATE_PERIOD && hostVal < MAX_UPDATE_PERIOD) {
+      updatePeriod = hostVal;
       sendAck(PIPE_HELLO_WORLD_UPDATE_PERIOD_RX_ACK);
     } else {
       sendNack(PIPE_HELLO_WORLD_UPDATE_PERIOD_RX_ACK, INVALID_UPDATE_PERIOD_ERROR);
+      DLOG(F("INVALID_UPDATE_PERIOD_ERROR"));
     }
     DLOG(F("Hello World Update Period Update"));
     DLOG(updatePeriod, DEC);
