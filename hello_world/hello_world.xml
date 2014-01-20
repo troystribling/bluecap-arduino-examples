@@ -9,9 +9,9 @@
         <Characteristic>
             <Name>Update Period</Name>
             <Uuid BaseUUID="2f0a000069aaf3163e784194989a6c1a" BaseUUIDName="gnos.us Base UUID">0002</Uuid>
-            <DefaultValue>0</DefaultValue>
+            <DefaultValue>1388</DefaultValue>
             <UsePresentationFormat>0</UsePresentationFormat>
-            <MaxDataLength>1</MaxDataLength>
+            <MaxDataLength>2</MaxDataLength>
             <AttributeLenType>1</AttributeLenType>
             <ForceOpen>false</ForceOpen>
             <Properties>
