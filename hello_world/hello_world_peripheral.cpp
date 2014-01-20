@@ -38,11 +38,11 @@ HelloWorldPeripheral::HelloWorldPeripheral(uint8_t reqn, uint8_t rdyn): BlueCapP
 }
 
 void HelloWorldPeripheral::didReceiveData(uint8_t characteristicId, uint8_t* data, uint8_t length) {
-  switch(characteristicId) {
-    case PIPE_HELLO_WORLD_UPDATE_PERIOD_RX_ACK:
-      setUpdatePeriod(data, length);
-      break;
-  }
+  // switch(characteristicId) {
+  //   case PIPE_HELLO_WORLD_UPDATE_PERIOD_RX_ACK:
+  //     setUpdatePeriod(data, length);
+  //     break;
+  // }
 }
 
 void HelloWorldPeripheral::didReceiveError(uint8_t pipe, uint8_t) {
@@ -50,7 +50,7 @@ void HelloWorldPeripheral::didReceiveError(uint8_t pipe, uint8_t) {
 }
 
 bool HelloWorldPeripheral::areAllPipesAvailable() {
-  return isPipeAvailable(PIPE_HELLO_WORLD_GREETING_TX);
+  return isPipeAvailable(PIPE_UART_OVER_BTLE_UART_TX_TX);
 }
 
 void HelloWorldPeripheral::loop() {
@@ -59,27 +59,27 @@ void HelloWorldPeripheral::loop() {
 }
 
 void HelloWorldPeripheral::setUpdatePeriod(uint8_t* data, uint8_t size) {
-    uint16_t bigVal;
-    memcpy(&bigVal, data, PIPE_HELLO_WORLD_UPDATE_PERIOD_RX_ACK_MAX_SIZE);
-    updatePeriod = uint16BigToHost(bigVal);
-    if (updatePeriod > MIN_UPDATE_PERIOD && updatePeriod < MAX_UPDATE_PERIOD) {
-      sendAck(PIPE_HELLO_WORLD_UPDATE_PERIOD_RX_ACK);
-    } else {
-      sendNack(PIPE_HELLO_WORLD_UPDATE_PERIOD_RX_ACK, INVALID_UPDATE_PERIOD_ERROR);
-    }
-    DLOG(F("Hello World Update Period Update"));
-    DLOG(updatePeriod, DEC);
+    // uint16_t bigVal;
+    // memcpy(&bigVal, data, PIPE_HELLO_WORLD_UPDATE_PERIOD_RX_ACK_MAX_SIZE);
+    // updatePeriod = uint16BigToHost(bigVal);
+    // if (updatePeriod > MIN_UPDATE_PERIOD && updatePeriod < MAX_UPDATE_PERIOD) {
+    //   sendAck(PIPE_HELLO_WORLD_UPDATE_PERIOD_RX_ACK);
+    // } else {
+    //   sendNack(PIPE_HELLO_WORLD_UPDATE_PERIOD_RX_ACK, INVALID_UPDATE_PERIOD_ERROR);
+    // }
+    // DLOG(F("Hello World Update Period Update"));
+    // DLOG(updatePeriod, DEC);
 }
 
 void HelloWorldPeripheral::setGreeting() {
-  if (millis() % updatePeriod == 0) {
-    DLOG(F("Greeting"));
-    char* greeting = greetings[greetingIndex];
-    DLOG(greeting);
-    sendData(PIPE_HELLO_WORLD_GREETING_TX, (uint8_t*)greeting, strlen(greeting));
-    greetingIndex++;
-    if (greetingIndex >= GREETING_COUNT) {
-      greetingIndex = 0;
-    }
-  }
+  // if (millis() % updatePeriod == 0) {
+  //   DLOG(F("Greeting"));
+  //   char* greeting = greetings[greetingIndex];
+  //   DLOG(greeting);
+  //   sendData(PIPE_HELLO_WORLD_GREETING_TX, (uint8_t*)greeting, strlen(greeting));
+  //   greetingIndex++;
+  //   if (greetingIndex >= GREETING_COUNT) {
+  //     greetingIndex = 0;
+  //   }
+  // }
 }
