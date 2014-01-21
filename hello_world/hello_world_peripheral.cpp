@@ -31,6 +31,8 @@ static char* greetings[] = {
 
 static uint16_t updatePeriod;
 static unsigned char greetingIndex = 0;
+static uint16_t statusAddress = 0;
+static uint16_t updatePeriodAddress = 2;
 
 HelloWorldPeripheral::HelloWorldPeripheral(uint8_t reqn, uint8_t rdyn): BlueCapPeripheral(reqn, rdyn) {
   setServicePipeTypeMapping(services_pipe_type_mapping, NUMBER_OF_PIPES);
@@ -53,6 +55,11 @@ void HelloWorldPeripheral::didReceiveError(uint8_t pipe, uint8_t) {
 void HelloWorldPeripheral::loop() {
   setGreeting();
   BlueCapPeripheral::loop();
+}
+
+void HelloWorldPeripheral::begin() {
+  waitForEEPROM();
+  BlueCapPeripheral::begin();
 }
 
 bool HelloWorldPeripheral::arePipesAvailable() {
@@ -88,7 +95,19 @@ void HelloWorldPeripheral::setGreeting() {
 }
 
 void HelloWorldPeripheral::writeParams() {
+  eeprom_write_word(&statusAddress, 1);
+  eeprom_write_word(&updatePeriodAddress, updatePeriod);
 }
 
 void HelloWorldPeripheral::readParams() {
+  uint16_t status = eeprom_read_word(&statusAddress);
+  if (status == 1) {
+    updatePeriod = eeprom_read_word(&updatePeriodAddress);
+  } else {
+    updatePeriod = INITIAL_UPDATE_PERIOD;
+  }
+}
+
+void HelloWorldPeripheral::waitForEEPROM() {
+  while (!eeprom_is_ready());
 }

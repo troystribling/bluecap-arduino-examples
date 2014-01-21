@@ -8,6 +8,7 @@ public:
 
   HelloWorldPeripheral(uint8_t reqn, uint8_t rdyn);
   void loop();
+  void begin();
 
 protected:
 
@@ -21,6 +22,7 @@ private:
   void setGreeting();
   void writeParams();
   void readParams();
+  void waitForEEPROM();
 
 };
 
