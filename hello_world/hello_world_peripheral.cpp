@@ -1,5 +1,5 @@
 #include <avr/pgmspace.h>
-#include <EEPROM.h>
+#include <avr/eeprom.h>
 #include "hello_world_peripheral.h"
 #include "dlog.h"
 #include "services.h"
