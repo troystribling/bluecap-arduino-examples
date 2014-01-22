@@ -53,7 +53,7 @@ void HelloWorldPeripheral::didReceiveError(uint8_t pipe, uint8_t) {
 
 void HelloWorldPeripheral::didStartAdvertising() {
   readParams();
-  sendData(PIPE_HELLO_WORLD_UPDATE_PERIOD_SET, (uint8_t*)&updatePeriod, (uint8_t)2);
+  // setData(PIPE_HELLO_WORLD_UPDATE_PERIOD_SET, (uint8_t*)&updatePeriod, 2);
 }
 
 void HelloWorldPeripheral::loop() {
@@ -101,18 +101,24 @@ void HelloWorldPeripheral::setGreeting() {
 }
 
 void HelloWorldPeripheral::writeParams() {
+  DLOG(F("writeParams"));
   eeprom_write_word(&statusAddress, 1);
   eeprom_write_word(&updatePeriodAddress, updatePeriod);
 }
 
 void HelloWorldPeripheral::readParams() {
   uint16_t status = eeprom_read_word(&statusAddress);
+  DLOG(F("readParams status:"));
+  DLOG(status, DEC);
   if (status == 1) {
     updatePeriod = eeprom_read_word(&updatePeriodAddress);
+    DLOG(F("readParams EEPROM updatePeriod:"));
   } else {
+    DLOG(F("readParams initialize updatePeriod:"));
     updatePeriod = INITIAL_UPDATE_PERIOD;
     writeParams();
   }
+  DLOG(updatePeriod, DEC);
 }
 
 void HelloWorldPeripheral::waitForEEPROM() {
