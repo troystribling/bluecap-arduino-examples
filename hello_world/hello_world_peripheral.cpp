@@ -37,7 +37,6 @@ static uint16_t updatePeriodAddress = 2;
 HelloWorldPeripheral::HelloWorldPeripheral(uint8_t reqn, uint8_t rdyn): BlueCapPeripheral(reqn, rdyn) {
   setServicePipeTypeMapping(services_pipe_type_mapping, NUMBER_OF_PIPES);
   setSetUpMessages(setup_msgs, NB_SETUP_MESSAGES);
-  updatePeriod = INITIAL_UPDATE_PERIOD;
 }
 
 void HelloWorldPeripheral::didReceiveData(uint8_t characteristicId, uint8_t* data, uint8_t length) {
@@ -50,6 +49,11 @@ void HelloWorldPeripheral::didReceiveData(uint8_t characteristicId, uint8_t* dat
 
 void HelloWorldPeripheral::didReceiveError(uint8_t pipe, uint8_t) {
   DLOG(F("HelloWorldPeripheral"));
+}
+
+void HelloWorldPeripheral::didStartAdvertising() {
+  readParams();
+  sendData(PIPE_HELLO_WORLD_UPDATE_PERIOD_SET, (uint8_t*)&updatePeriod, (uint8_t)2);
 }
 
 void HelloWorldPeripheral::loop() {
@@ -72,7 +76,9 @@ void HelloWorldPeripheral::setUpdatePeriod(uint8_t* data, uint8_t size) {
     hostVal = uint16BigToHost(bigVal);
     if (hostVal > MIN_UPDATE_PERIOD && hostVal < MAX_UPDATE_PERIOD) {
       updatePeriod = hostVal;
-      sendAck(PIPE_HELLO_WORLD_UPDATE_PERIOD_RX_ACK);
+      if (sendAck(PIPE_HELLO_WORLD_UPDATE_PERIOD_RX_ACK)) {
+        writeParams();
+      }
     } else {
       sendNack(PIPE_HELLO_WORLD_UPDATE_PERIOD_RX_ACK, INVALID_UPDATE_PERIOD_ERROR);
       DLOG(F("INVALID_UPDATE_PERIOD_ERROR"));
@@ -83,8 +89,8 @@ void HelloWorldPeripheral::setUpdatePeriod(uint8_t* data, uint8_t size) {
 
 void HelloWorldPeripheral::setGreeting() {
   if (millis() % updatePeriod == 0) {
-    DLOG(F("Greeting"));
     char* greeting = greetings[greetingIndex];
+    DLOG(F("Greeting"));
     DLOG(greeting);
     sendData(PIPE_HELLO_WORLD_GREETING_TX, (uint8_t*)greeting, strlen(greeting));
     greetingIndex++;
@@ -105,6 +111,7 @@ void HelloWorldPeripheral::readParams() {
     updatePeriod = eeprom_read_word(&updatePeriodAddress);
   } else {
     updatePeriod = INITIAL_UPDATE_PERIOD;
+    writeParams();
   }
 }
 
