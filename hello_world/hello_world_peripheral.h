@@ -15,8 +15,8 @@ protected:
   void didReceiveData(uint8_t characteristic_id, uint8_t* data, uint8_t length);
   void didReceiveError(uint8_t pipe, uint8_t errorCode);
   void didStartAdvertising();
-  void didReceiveReady();
-  bool arePipesAvailable();
+  void didReceiveStatusChange();
+  bool doTimingChange();
 
 private:
 

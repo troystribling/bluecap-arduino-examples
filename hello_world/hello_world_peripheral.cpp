@@ -52,15 +52,19 @@ void HelloWorldPeripheral::didReceiveError(uint8_t pipe, uint8_t) {
 }
 
 void HelloWorldPeripheral::didStartAdvertising() {
-  // readParams();
-  requestData(PIPE_HELLO_WORLD_UPDATE_PERIOD_SET);
+  readParams();
 }
 
-void HelloWorldPeripheral::didReceiveReady() {
+void HelloWorldPeripheral::didReceiveStatusChange() {
 }
 
+static bool dataSet = false;
 void HelloWorldPeripheral::loop() {
-  setGreeting();
+  // setGreeting();
+    uint16_t testVal = 1000;
+  // if (!dataSet) {
+  //   dataSet = setData(PIPE_HELLO_WORLD_UPDATE_PERIOD_SET, (uint8_t*)&testVal, (uint8_t)2);
+  // }
   BlueCapPeripheral::loop();
 }
 
@@ -69,7 +73,7 @@ void HelloWorldPeripheral::begin() {
   BlueCapPeripheral::begin();
 }
 
-bool HelloWorldPeripheral::arePipesAvailable() {
+bool HelloWorldPeripheral::doTimingChange() {
   return isPipeAvailable(PIPE_HELLO_WORLD_GREETING_TX) || isPipeAvailable(PIPE_BATTERY_BATTERY_LEVEL_TX);
 }
 
@@ -95,7 +99,7 @@ void HelloWorldPeripheral::setGreeting() {
     char* greeting = greetings[greetingIndex];
     DLOG(F("Greeting"));
     DLOG(greeting);
-    sendData(PIPE_HELLO_WORLD_GREETING_TX, (uint8_t*)greeting, strlen(greeting));
+    sendData(PIPE_HELLO_WORLD_GREETING_TX, (uint8_t*)greeting, strlen(greeting) + 1);
     greetingIndex++;
     if (greetingIndex >= GREETING_COUNT) {
       greetingIndex = 0;
