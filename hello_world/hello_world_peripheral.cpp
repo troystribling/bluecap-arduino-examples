@@ -52,8 +52,11 @@ void HelloWorldPeripheral::didReceiveError(uint8_t pipe, uint8_t) {
 }
 
 void HelloWorldPeripheral::didStartAdvertising() {
-  readParams();
-  // setData(PIPE_HELLO_WORLD_UPDATE_PERIOD_SET, (uint8_t*)&updatePeriod, 2);
+  // readParams();
+  requestData(PIPE_HELLO_WORLD_UPDATE_PERIOD_SET);
+}
+
+void HelloWorldPeripheral::didReceiveReady() {
 }
 
 void HelloWorldPeripheral::loop() {
