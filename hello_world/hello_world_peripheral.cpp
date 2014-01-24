@@ -44,11 +44,32 @@ void HelloWorldPeripheral::didReceiveData(uint8_t characteristicId, uint8_t* dat
     case PIPE_HELLO_WORLD_UPDATE_PERIOD_RX_ACK:
       setUpdatePeriod(data, length);
       break;
+    default:
+      break;
   }
 }
 
-void HelloWorldPeripheral::didReceiveError(uint8_t pipe, uint8_t) {
-  DLOG(F("HelloWorldPeripheral"));
+void HelloWorldPeripheral::didReceiveCommandResponse(uint8_t commandId, uint8_t* data, uint8_t length) {
+  switch(commandId) {
+    case ACI_CMD_GET_BATTERY_LEVEL:
+      DLOG(F("ACI_CMD_GET_BATTERY_LEVEL response received"));
+      setBatteryLevel(data, length);
+      break;
+    case ACI_CMD_GET_TEMPERATURE:
+      DLOG(F("ACI_CMD_GET_TEMPERATURE response received"));
+      break;
+    case ACI_CMD_CONNECT:
+      DLOG(F("ACI_CMD_CONNECT response received"));
+      break;
+    default:
+      break;
+  }
+}
+
+void HelloWorldPeripheral::didReceiveError(uint8_t pipe, uint8_t errorCode) {
+  DLOG(F("didReceiveError on pipe:"));
+  DLOG(pipe, HEX);
+  DLOG(errorCode, HEX);
 }
 
 void HelloWorldPeripheral::didStartAdvertising() {
@@ -68,7 +89,10 @@ bool HelloWorldPeripheral::doTimingChange() {
 }
 
 void HelloWorldPeripheral::loop() {
-  setGreeting();
+  if (millis() % updatePeriod == 0) {
+    setGreeting();
+    getBatteryLevel();
+  }
   BlueCapPeripheral::loop();
 }
 
@@ -94,16 +118,21 @@ void HelloWorldPeripheral::setUpdatePeriod(uint8_t* data, uint8_t size) {
 }
 
 void HelloWorldPeripheral::setGreeting() {
-  if (millis() % updatePeriod == 0) {
-    char* greeting = greetings[greetingIndex];
-    DLOG(F("Greeting"));
-    DLOG(greeting);
-    sendData(PIPE_HELLO_WORLD_GREETING_TX, (uint8_t*)greeting, strlen(greeting) + 1);
-    greetingIndex++;
-    if (greetingIndex >= GREETING_COUNT) {
-      greetingIndex = 0;
-    }
+  char* greeting = greetings[greetingIndex];
+  DLOG(F("Greeting"));
+  DLOG(greeting);
+  sendData(PIPE_HELLO_WORLD_GREETING_TX, (uint8_t*)greeting, strlen(greeting) + 1);
+  greetingIndex++;
+  if (greetingIndex >= GREETING_COUNT) {
+    greetingIndex = 0;
   }
+}
+
+void HelloWorldPeripheral::setBatteryLevel(uint8_t* data, uint8_t length) {
+  // uint16_t bigVal;
+  // memcpy(&bigVal, data, length);
+  DLOG(F("setBatteryLevel"));
+  DLOG(length, DEC);
 }
 
 void HelloWorldPeripheral::writeParams() {

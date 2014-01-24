@@ -13,6 +13,7 @@ public:
 protected:
 
   void didReceiveData(uint8_t characteristic_id, uint8_t* data, uint8_t length);
+  void didReceiveCommandResponse(uint8_t commandId, uint8_t* data, uint8_t length);
   void didReceiveError(uint8_t pipe, uint8_t errorCode);
   void didStartAdvertising();
   void didReceiveStatusChange();
@@ -23,6 +24,7 @@ private:
 
   void setUpdatePeriod(uint8_t* data, uint8_t size);
   void setGreeting();
+  void setBatteryLevel(uint8_t* data, uint8_t length);
   void writeParams();
   void readParams();
 
