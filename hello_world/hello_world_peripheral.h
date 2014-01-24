@@ -16,6 +16,7 @@ protected:
   void didReceiveError(uint8_t pipe, uint8_t errorCode);
   void didStartAdvertising();
   void didReceiveStatusChange();
+  void didConnect();
   bool doTimingChange();
 
 private:

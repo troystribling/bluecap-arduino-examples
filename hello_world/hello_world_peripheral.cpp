@@ -58,23 +58,23 @@ void HelloWorldPeripheral::didStartAdvertising() {
 void HelloWorldPeripheral::didReceiveStatusChange() {
 }
 
-static bool dataSet = false;
+void HelloWorldPeripheral::didConnect() {
+  uint16_t bigVal = uint16HostToBig(updatePeriod);
+  setData(PIPE_HELLO_WORLD_UPDATE_PERIOD_SET, (uint8_t*)&bigVal, 2);
+}
+
+bool HelloWorldPeripheral::doTimingChange() {
+  return isPipeAvailable(PIPE_HELLO_WORLD_GREETING_TX) || isPipeAvailable(PIPE_BATTERY_BATTERY_LEVEL_TX);
+}
+
 void HelloWorldPeripheral::loop() {
-  // setGreeting();
-    uint16_t testVal = 1000;
-  // if (!dataSet) {
-  //   dataSet = setData(PIPE_HELLO_WORLD_UPDATE_PERIOD_SET, (uint8_t*)&testVal, (uint8_t)2);
-  // }
+  setGreeting();
   BlueCapPeripheral::loop();
 }
 
 void HelloWorldPeripheral::begin() {
   waitForEEPROM();
   BlueCapPeripheral::begin();
-}
-
-bool HelloWorldPeripheral::doTimingChange() {
-  return isPipeAvailable(PIPE_HELLO_WORLD_GREETING_TX) || isPipeAvailable(PIPE_BATTERY_BATTERY_LEVEL_TX);
 }
 
 void HelloWorldPeripheral::setUpdatePeriod(uint8_t* data, uint8_t size) {
