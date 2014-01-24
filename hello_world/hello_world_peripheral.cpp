@@ -73,7 +73,6 @@ void HelloWorldPeripheral::loop() {
 }
 
 void HelloWorldPeripheral::begin() {
-  waitForEEPROM();
   BlueCapPeripheral::begin();
 }
 
