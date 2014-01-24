@@ -25,7 +25,6 @@ private:
   void setGreeting();
   void writeParams();
   void readParams();
-  void waitForEEPROM();
 
 };
 

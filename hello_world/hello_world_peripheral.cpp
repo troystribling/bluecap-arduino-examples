@@ -127,7 +127,3 @@ void HelloWorldPeripheral::readParams() {
   }
   DLOG(updatePeriod, DEC);
 }
-
-void HelloWorldPeripheral::waitForEEPROM() {
-  while (!eeprom_is_ready());
-}
