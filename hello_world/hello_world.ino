@@ -1,5 +1,6 @@
 // hello_world.ino
 #include <SPI.h>
+#include <EEPROM.h>
 #include "dlog.h"
 #include "blue_cap_peripheral.h"
 #include "hello_world_peripheral.h"
