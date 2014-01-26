@@ -7,7 +7,7 @@
 #define REQN_PIN  9
 #define RDYN_PIN  8
 
-BondPeripheral bond(REQN_PIN, RDYN_PIN);
+BondPeripheral bond(REQN_PIN, RDYN_PIN, 0);
 
 void setup() {
 #ifdef DEBUG
