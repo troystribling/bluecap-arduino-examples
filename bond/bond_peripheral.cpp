@@ -19,6 +19,12 @@ void BondPeripheral::didReceiveCommandResponse(uint8_t commandId, uint8_t* data,
     case ACI_CMD_GET_DEVICE_VERSION:
       DLOG(F("ACI_CMD_GET_DEVICE_VERSION response received"));
       break;
+    case ACI_CMD_BOND:
+      DLOG(F("ACI_CMD_BOND response received"));
+      break;
+    case ACI_CMD_CHANGE_TIMING:
+      DLOG(F("ACI_CMD_CHANGE_TIMING response received"));
+      break;
     default:
       break;
   }
