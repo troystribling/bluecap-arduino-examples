@@ -11,6 +11,7 @@ public:
 
 protected:
 
+  void didReceiveCommandResponse(uint8_t commandId, uint8_t* data, uint8_t size);
   bool doTimingChange();
 };
 

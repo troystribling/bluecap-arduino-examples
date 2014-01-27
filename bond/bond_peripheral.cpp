@@ -11,6 +11,19 @@ BondPeripheral::BondPeripheral(uint8_t _reqn, uint8_t _rdyn, uint16_t _eepromOff
   setSetUpMessages(setup_msgs, NB_SETUP_MESSAGES);
 }
 
+void BondPeripheral::didReceiveCommandResponse(uint8_t commandId, uint8_t* data, uint8_t size) {
+  switch(commandId) {
+    case ACI_CMD_CONNECT:
+      DLOG(F("ACI_CMD_CONNECT response received"));
+      break;
+    case ACI_CMD_GET_DEVICE_VERSION:
+      DLOG(F("ACI_CMD_GET_DEVICE_VERSION response received"));
+      break;
+    default:
+      break;
+  }
+}
+
 void BondPeripheral::loop() {
   BlueCapPeripheral::loop();
 }
