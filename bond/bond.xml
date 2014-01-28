@@ -118,7 +118,7 @@
         <LocalPipeOnDeviceName>false</LocalPipeOnDeviceName>
         <DeviceNameShortLength>0</DeviceNameShortLength>
         <Apperance>0000</Apperance>
-        <SecurityLevel>0</SecurityLevel>
+        <SecurityLevel>1</SecurityLevel>
         <AuthenticationReq>0</AuthenticationReq>
         <IoCapabilities>0</IoCapabilities>
         <BondTimeout>600</BondTimeout>
