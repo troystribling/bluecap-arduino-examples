@@ -121,8 +121,8 @@
         <SecurityLevel>1</SecurityLevel>
         <AuthenticationReq>0</AuthenticationReq>
         <IoCapabilities>0</IoCapabilities>
-        <BondTimeout>600</BondTimeout>
-        <SecurityRequestDelay>10</SecurityRequestDelay>
+        <BondTimeout>0</BondTimeout>
+        <SecurityRequestDelay>0</SecurityRequestDelay>
         <MinimumKeySize>7</MinimumKeySize>
         <MaximumKeySize>16</MaximumKeySize>
         <AdvertisingDataBondedBitmap>0</AdvertisingDataBondedBitmap>
