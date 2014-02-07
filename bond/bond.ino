@@ -20,6 +20,7 @@ void setup() {
   pinMode(RESET_PIN, INPUT);
   DLOG(F("To delete the bond stored in EEPROM, connect Pin 6 to 3.3v and Reset."));
   DLOG(F("Make sure that the bond on the phone/PC is deleted as well."));
+  DLOG(F("Reset pin value:"));
   DLOG(digitalRead(RESET_PIN), DEC);
   if (digitalRead(RESET_PIN) == HIGH) {
     DLOG(F("Clearing EEPROM bond"));
