@@ -3,6 +3,7 @@
 #include <EEPROM.h>
 #include "dlog.h"
 #include "blue_cap_peripheral.h"
+#include "blue_cap_bond.h"
 #include "bond_peripheral.h"
 
 #define REQN_PIN      9
@@ -10,7 +11,8 @@
 #define EEPROM_OFFSET 0
 #define RESET_PIN     6
 
-BondPeripheral bond(REQN_PIN, RDYN_PIN, 0);
+BlueCapBond bond;
+BondPeripheral bondPeripheral(REQN_PIN, RDYN_PIN, &bond);
 
 void setup() {
 #ifdef DEBUG
@@ -29,10 +31,10 @@ void setup() {
     while(1){delay(1000);};
   }
 
-  bond.begin();
+  bondPeripheral.begin();
 }
 
 void loop() {
-  bond.loop();
+  bondPeripheral.loop();
 }
 

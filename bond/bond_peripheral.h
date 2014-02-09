@@ -2,11 +2,12 @@
 #define _BOND_PERIPHERAL_H
 
 #import "blue_cap_peripheral.h"
+#import "blue_cap_bond.h"
 
 class BondPeripheral : public BlueCapPeripheral {
 public:
 
-  BondPeripheral(uint8_t _reqn, uint8_t _rdyn, uint16_t _eepromOffset);
+  BondPeripheral(uint8_t _reqn, uint8_t _rdyn, BlueCapBond* _bond);
   void loop();
 
 protected:
