@@ -37,3 +37,7 @@ void BondPeripheral::loop() {
 bool BondPeripheral::doTimingChange() {
   return true;
 }
+
+void BondPeripheral::didBond() {
+  DLOG(F("Bonded"));
+}
