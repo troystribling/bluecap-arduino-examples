@@ -134,6 +134,7 @@ void HelloWorldPeripheral::setGreeting() {
   DLOG(F("Greeting"));
   DLOG(greeting);
   sendData(PIPE_HELLO_WORLD_GREETING_TX, (uint8_t*)greeting, strlen(greeting) + 1);
+  setData(PIPE_HELLO_WORLD_GREETING_TX, (uint8_t*)greeting, strlen(greeting) + 1);
   greetingIndex++;
   if (greetingIndex >= GREETING_COUNT) {
     greetingIndex = 0;
