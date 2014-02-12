@@ -70,6 +70,9 @@ void HelloWorldPeripheral::didReceiveCommandResponse(uint8_t commandId, uint8_t*
     case ACI_CMD_GET_DEVICE_VERSION:
       DLOG(F("ACI_CMD_GET_DEVICE_VERSION response received"));
       break;
+    case  ACI_CMD_SET_LOCAL_DATA:
+      DLOG(F("ACI_CMD_SET_LOCAL_DATA response received"));
+      break;
     default:
       break;
   }
