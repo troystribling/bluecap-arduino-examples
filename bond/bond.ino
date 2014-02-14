@@ -10,7 +10,7 @@
 #define EEPROM_OFFSET 0
 #define RESET_PIN     6
 
-BondPeripheral bond(REQN_PIN, RDYN_PIN, 0);
+BondPeripheral bond(REQN_PIN, RDYN_PIN, 0, 1);
 
 void setup() {
 #ifdef DEBUG
