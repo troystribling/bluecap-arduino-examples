@@ -34,6 +34,11 @@ void BondPeripheral::loop() {
   BlueCapPeripheral::loop();
 }
 
+void BondPeripheral::begin() {
+  DLOG(F("BondPeripheral::begin"));
+  BlueCapPeripheral::begin();
+}
+
 bool BondPeripheral::doTimingChange() {
   return true;
 }

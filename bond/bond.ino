@@ -28,7 +28,6 @@ void setup() {
     DLOG(F("Remove wire and reset"));
     while(1){delay(1000);};
   }
-
   bond.begin();
 }
 
