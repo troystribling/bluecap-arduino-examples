@@ -9,8 +9,9 @@
 #define RDYN_PIN      8
 #define EEPROM_OFFSET 0
 #define RESET_PIN     6
+#define MAX_BONDS     2
 
-BondPeripheral bond(REQN_PIN, RDYN_PIN, 0, 1);
+BondPeripheral bond(REQN_PIN, RDYN_PIN, EEPROM_OFFSET, MAX_BONDS);
 
 void setup() {
 #ifdef DEBUG
