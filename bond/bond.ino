@@ -37,7 +37,7 @@ void loop() {
   if (digitalRead(ADD_BOND_PIN) == HIGH) {
     bond.addBond();
     DLOG(F("Added bond. Remove wire"));
-    while(1){delay(1000);};
+    delay(5000);
   }
 }
 
