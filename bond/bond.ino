@@ -11,7 +11,7 @@
 #define RESET_PIN           6
 #define ADD_BOND_PIN        7
 #define MAX_BONDS           2
-#define ADD_BOND_PIN_COUNT  10000
+#define ADD_BOND_PIN_COUNT  20000
 
 uint16_t addBondCount       = 0;
 bool updateAddBondCount    = false;
