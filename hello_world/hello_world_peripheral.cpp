@@ -73,6 +73,18 @@ void HelloWorldPeripheral::didReceiveCommandResponse(uint8_t commandId, uint8_t*
     case  ACI_CMD_SET_LOCAL_DATA:
       DLOG(F("ACI_CMD_SET_LOCAL_DATA response received"));
       break;
+    case ACI_CMD_SEND_DATA:
+      DLOG(F("ACI_CMD_SEND_DATA response received"));
+      break;
+    case ACI_CMD_SEND_DATA_ACK:
+      DLOG(F("ACI_CMD_SEND_DATA_ACK response received"));
+      break;
+    case ACI_CMD_SEND_DATA_NACK:
+      DLOG(F("ACI_CMD_SEND_DATA_NACK response received"));
+      break;
+    case ACI_CMD_CHANGE_TIMING:
+      DLOG(F("ACI_CMD_CHANGE_TIMING response received"));
+      break;
     default:
       break;
   }
@@ -104,9 +116,8 @@ void HelloWorldPeripheral::loop() {
   if (millis() % updatePeriod == 0) {
     setGreeting();
     getBatteryLevel();
-    getTemperature();
-    getAddress();
-    getDeviceVersion();
+    // getTemperature();
+    // getAddress();
   }
   BlueCapPeripheral::loop();
 }
@@ -146,18 +157,22 @@ void HelloWorldPeripheral::setGreeting() {
 
 void HelloWorldPeripheral::setBatteryLevel(uint8_t* data, uint8_t size) {
   uint16_t deviceVal;
-  memcpy(&deviceVal, data, size);
+  memcpy(&deviceVal, data, 2);
   uint16_t level = 3.52 * int16BigToHost(deviceVal);
   DLOG(F("setBatteryLevel level:"));
   DLOG(level, DEC);
+  sendData(PIPE_BATTERY_BATTERY_LEVEL_TX, data, 2);
+  setData(PIPE_BATTERY_BATTERY_LEVEL_TX, data, 2);
 }
 
 void HelloWorldPeripheral::setTemperature(uint8_t* data, uint8_t size) {
   int16_t deviceVal;
-  memcpy(&deviceVal, data, size);
+  memcpy(&deviceVal, data, 2);
   int16_t temp = int16BigToHost(deviceVal) / 4;
   DLOG(F("setTemperature temp:"));
   DLOG(temp, DEC);
+  sendData(PIPE_TEMPERATURE_TEMPERATURE_TX, data, 2);
+  setData(PIPE_TEMPERATURE_TEMPERATURE_SET, data, 2);
 }
 
 void HelloWorldPeripheral::writeParams() {

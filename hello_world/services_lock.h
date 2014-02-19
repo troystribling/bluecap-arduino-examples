@@ -58,37 +58,42 @@
 #define PIPE_HELLO_WORLD_GREETING_TX          3
 #define PIPE_HELLO_WORLD_GREETING_TX_MAX_SIZE 20
 
+/* Service: Hello World - Characteristic: Greeting - Pipe: SET */
+#define PIPE_HELLO_WORLD_GREETING_SET          4
+#define PIPE_HELLO_WORLD_GREETING_SET_MAX_SIZE 20
+
 /* Service: Temperature - Characteristic: Temperature - Pipe: TX */
-#define PIPE_TEMPERATURE_TEMPERATURE_TX          4
+#define PIPE_TEMPERATURE_TEMPERATURE_TX          5
 #define PIPE_TEMPERATURE_TEMPERATURE_TX_MAX_SIZE 2
 
 /* Service: Temperature - Characteristic: Temperature - Pipe: SET */
-#define PIPE_TEMPERATURE_TEMPERATURE_SET          5
+#define PIPE_TEMPERATURE_TEMPERATURE_SET          6
 #define PIPE_TEMPERATURE_TEMPERATURE_SET_MAX_SIZE 2
 
 /* Service: BLE Device Address - Characteristic: BLE Address Type - Pipe: SET */
-#define PIPE_BLE_DEVICE_ADDRESS_BLE_ADDRESS_TYPE_SET          6
+#define PIPE_BLE_DEVICE_ADDRESS_BLE_ADDRESS_TYPE_SET          7
 #define PIPE_BLE_DEVICE_ADDRESS_BLE_ADDRESS_TYPE_SET_MAX_SIZE 1
 
 /* Service: BLE Device Address - Characteristic: BLE Address - Pipe: SET */
-#define PIPE_BLE_DEVICE_ADDRESS_BLE_ADDRESS_SET          7
+#define PIPE_BLE_DEVICE_ADDRESS_BLE_ADDRESS_SET          8
 #define PIPE_BLE_DEVICE_ADDRESS_BLE_ADDRESS_SET_MAX_SIZE 6
 
 /* Service: Device Information - Characteristic: Hardware Revision String - Pipe: SET */
-#define PIPE_DEVICE_INFORMATION_HARDWARE_REVISION_STRING_SET          8
+#define PIPE_DEVICE_INFORMATION_HARDWARE_REVISION_STRING_SET          9
 #define PIPE_DEVICE_INFORMATION_HARDWARE_REVISION_STRING_SET_MAX_SIZE 2
 
 /* Service: Battery - Characteristic: Battery Level - Pipe: TX */
-#define PIPE_BATTERY_BATTERY_LEVEL_TX          9
+#define PIPE_BATTERY_BATTERY_LEVEL_TX          10
 #define PIPE_BATTERY_BATTERY_LEVEL_TX_MAX_SIZE 1
 
 
-#define NUMBER_OF_PIPES 9
+#define NUMBER_OF_PIPES 10
 
 #define SERVICES_PIPE_TYPE_MAPPING_CONTENT {\
   {ACI_STORE_LOCAL, ACI_RX_ACK},   \
   {ACI_STORE_LOCAL, ACI_SET},   \
   {ACI_STORE_LOCAL, ACI_TX},   \
+  {ACI_STORE_LOCAL, ACI_SET},   \
   {ACI_STORE_LOCAL, ACI_TX},   \
   {ACI_STORE_LOCAL, ACI_SET},   \
   {ACI_STORE_LOCAL, ACI_SET},   \
@@ -111,7 +116,7 @@
     },\
     {0x00,\
         {\
-            0x1f,0x06,0x10,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x07,0x00,0x09,0x01,0x01,0x00,0x00,0x06,0x00,0x00,\
+            0x1f,0x06,0x10,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x07,0x00,0x0a,0x01,0x01,0x00,0x00,0x06,0x00,0x00,\
             0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,\
         },\
     },\
@@ -295,7 +300,7 @@
     },\
     {0x00,\
         {\
-            0x1f,0x06,0x40,0x00,0x00,0x02,0x02,0x00,0x90,0x04,0x00,0x0b,0x00,0x00,0x00,0x01,0x02,0x00,0x02,0x04,\
+            0x1f,0x06,0x40,0x00,0x00,0x02,0x02,0x00,0x90,0x04,0x00,0x0b,0x00,0x00,0x00,0x01,0x02,0x00,0x82,0x04,\
             0x00,0x0d,0x00,0x0f,0x00,0x04,0x02,0x00,0x82,0x04,0x00,0x12,\
         },\
     },\
@@ -323,7 +328,7 @@
     },\
     {0x00,\
         {\
-            0x06,0x06,0xf0,0x00,0x83,0xfa,0xc4,\
+            0x06,0x06,0xf0,0x00,0x83,0x9b,0xb5,\
         },\
     },\
 }
