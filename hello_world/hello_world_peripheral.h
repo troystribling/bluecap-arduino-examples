@@ -29,6 +29,10 @@ private:
   void writeParams();
   void readParams();
 
+private:
+
+  float  deviceBatteryLevelInitial;
+
 };
 
 #endif

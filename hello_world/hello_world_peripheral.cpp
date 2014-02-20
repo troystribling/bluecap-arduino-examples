@@ -39,6 +39,7 @@ static uint8_t  batteryLevel = 100;
 HelloWorldPeripheral::HelloWorldPeripheral(uint8_t reqn, uint8_t rdyn): BlueCapPeripheral(reqn, rdyn) {
   setServicePipeTypeMapping(services_pipe_type_mapping, NUMBER_OF_PIPES);
   setSetUpMessages(setup_msgs, NB_SETUP_MESSAGES);
+  deviceBatteryLevelInitial = -1.0;
 }
 
 void HelloWorldPeripheral::didReceiveData(uint8_t characteristicId, uint8_t* data, uint8_t size) {
@@ -116,8 +117,8 @@ void HelloWorldPeripheral::loop() {
   if (millis() % updatePeriod == 0) {
     setGreeting();
     getBatteryLevel();
-    // getTemperature();
-    // getAddress();
+    getTemperature();
+    getAddress();
   }
   BlueCapPeripheral::loop();
 }
@@ -148,7 +149,7 @@ void HelloWorldPeripheral::setGreeting() {
   DLOG(F("Greeting"));
   DLOG(greeting);
   sendData(PIPE_HELLO_WORLD_GREETING_TX, (uint8_t*)greeting, strlen(greeting) + 1);
-  setData(PIPE_HELLO_WORLD_GREETING_TX, (uint8_t*)greeting, strlen(greeting) + 1);
+  setData(PIPE_HELLO_WORLD_GREETING_SET, (uint8_t*)greeting, strlen(greeting) + 1);
   greetingIndex++;
   if (greetingIndex >= GREETING_COUNT) {
     greetingIndex = 0;
@@ -158,11 +159,16 @@ void HelloWorldPeripheral::setGreeting() {
 void HelloWorldPeripheral::setBatteryLevel(uint8_t* data, uint8_t size) {
   uint16_t deviceVal;
   memcpy(&deviceVal, data, 2);
-  uint16_t level = 3.52 * int16BigToHost(deviceVal);
-  DLOG(F("setBatteryLevel level:"));
-  DLOG(level, DEC);
-  sendData(PIPE_BATTERY_BATTERY_LEVEL_TX, data, 2);
-  setData(PIPE_BATTERY_BATTERY_LEVEL_TX, data, 2);
+  float level = 3.52 * (float)int16BigToHost(deviceVal);
+  if (deviceBatteryLevelInitial < 0.0) {
+    deviceBatteryLevelInitial = level;
+  }
+  uint8_t percentage = (uint8_t)(100.0*level/deviceBatteryLevelInitial);
+  DLOG(F("setBatteryLevel level, percentage:"));
+  DLOG(level);
+  DLOG(percentage);
+  sendData(PIPE_BATTERY_BATTERY_LEVEL_TX, &percentage, 1);
+  setData(PIPE_BATTERY_BATTERY_LEVEL_SET, &percentage, 1);
 }
 
 void HelloWorldPeripheral::setTemperature(uint8_t* data, uint8_t size) {
