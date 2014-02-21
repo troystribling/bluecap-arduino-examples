@@ -26,6 +26,7 @@ private:
   void setGreeting();
   void setBatteryLevel(uint8_t* data, uint8_t size);
   void setTemperature(uint8_t* data, uint8_t size);
+  void setBLEAddress(uint8_t* data, uint8_t size);
   void writeParams();
   void readParams();
 

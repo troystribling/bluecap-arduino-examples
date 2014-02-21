@@ -67,6 +67,7 @@ void HelloWorldPeripheral::didReceiveCommandResponse(uint8_t commandId, uint8_t*
       break;
     case ACI_CMD_GET_DEVICE_ADDRESS:
       DLOG(F("ACI_CMD_GET_DEVICE_ADDRESS response received"));
+      setBLEAddress(data, size);
       break;
     case ACI_CMD_GET_DEVICE_VERSION:
       DLOG(F("ACI_CMD_GET_DEVICE_VERSION response received"));
@@ -118,7 +119,7 @@ void HelloWorldPeripheral::loop() {
     setGreeting();
     getBatteryLevel();
     getTemperature();
-    getAddress();
+    getBLEAddress();
   }
   BlueCapPeripheral::loop();
 }
@@ -179,6 +180,12 @@ void HelloWorldPeripheral::setTemperature(uint8_t* data, uint8_t size) {
   DLOG(temp, DEC);
   sendData(PIPE_TEMPERATURE_TEMPERATURE_TX, data, 2);
   setData(PIPE_TEMPERATURE_TEMPERATURE_SET, data, 2);
+}
+
+void HelloWorldPeripheral::setBLEAddress(uint8_t* data, uint8_t size) {
+  DLOG(F("setBLEAddress"));
+  setData(PIPE_BLE_DEVICE_ADDRESS_BLE_ADDRESS_SET, data, PIPE_BLE_DEVICE_ADDRESS_BLE_ADDRESS_SET_MAX_SIZE);
+  setData(PIPE_BLE_DEVICE_ADDRESS_BLE_ADDRESS_TYPE_SET, &data[6], PIPE_BLE_DEVICE_ADDRESS_BLE_ADDRESS_TYPE_SET_MAX_SIZE);
 }
 
 void HelloWorldPeripheral::writeParams() {

@@ -100,7 +100,7 @@
         </Characteristic>
         <Characteristic>
             <Name>BLE Address</Name>
-            <Uuid>0006</Uuid>
+            <Uuid BaseUUID="2f0a000069aaf3163e784194989a6c1a" BaseUUIDName="gnos.us Base UUID">0006</Uuid>
             <DefaultValue>0</DefaultValue>
             <UsePresentationFormat>0</UsePresentationFormat>
             <MaxDataLength>6</MaxDataLength>
