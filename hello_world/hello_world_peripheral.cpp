@@ -184,8 +184,13 @@ void HelloWorldPeripheral::setTemperature(uint8_t* data, uint8_t size) {
 
 void HelloWorldPeripheral::setBLEAddress(uint8_t* data, uint8_t size) {
   DLOG(F("setBLEAddress"));
-  setData(PIPE_BLE_DEVICE_ADDRESS_BLE_ADDRESS_SET, data, PIPE_BLE_DEVICE_ADDRESS_BLE_ADDRESS_SET_MAX_SIZE);
-  setData(PIPE_BLE_DEVICE_ADDRESS_BLE_ADDRESS_TYPE_SET, &data[6], PIPE_BLE_DEVICE_ADDRESS_BLE_ADDRESS_TYPE_SET_MAX_SIZE);
+  DLOG(F("size, values:"));
+  DLOG(size);
+  for(int i=0; i < size; i++) {
+    DLOG(data[i], HEX);
+  }
+  setData(PIPE_BLE_DEVICE_ADDRESS_BLE_ADDRESS_SET, &data[1], PIPE_BLE_DEVICE_ADDRESS_BLE_ADDRESS_SET_MAX_SIZE);
+  setData(PIPE_BLE_DEVICE_ADDRESS_BLE_ADDRESS_TYPE_SET, data, PIPE_BLE_DEVICE_ADDRESS_BLE_ADDRESS_TYPE_SET_MAX_SIZE);
 }
 
 void HelloWorldPeripheral::writeParams() {

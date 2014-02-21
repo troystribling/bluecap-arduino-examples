@@ -80,7 +80,7 @@
         <Characteristic>
             <Name>BLE Address Type</Name>
             <Uuid BaseUUID="2f0a000069aaf3163e784194989a6c1a" BaseUUIDName="gnos.us Base UUID">0007</Uuid>
-            <DefaultValue>0</DefaultValue>
+            <DefaultValue>3</DefaultValue>
             <UsePresentationFormat>0</UsePresentationFormat>
             <MaxDataLength>1</MaxDataLength>
             <AttributeLenType>1</AttributeLenType>
