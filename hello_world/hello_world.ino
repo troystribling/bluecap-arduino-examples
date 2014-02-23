@@ -1,10 +1,10 @@
 // hello_world.ino
 #include <SPI.h>
 #include <EEPROM.h>
-#include "dlog.h"
+#include "utils.h"
+#include "aci.h"
 #include "blue_cap_peripheral.h"
 #include "hello_world_peripheral.h"
-#include "byte_swap.h"
 
 #define REQN_PIN  9
 #define RDYN_PIN  8

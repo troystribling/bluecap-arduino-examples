@@ -1,7 +1,8 @@
 // bond.ino
 #include <SPI.h>
 #include <EEPROM.h>
-#include "dlog.h"
+#include "aci.h"
+#include "utils.h"
 #include "blue_cap_peripheral.h"
 #include "bond_peripheral.h"
 
