@@ -20,6 +20,7 @@ bool updateAddBondCount    = false;
 BondPeripheral bond(REQN_PIN, RDYN_PIN, EEPROM_OFFSET, MAX_BONDS);
 
 void setup() {
+  Serial.begin(9600);
   bond.begin();
   pinMode(RESET_PIN, INPUT);
   pinMode(ADD_BOND_PIN, INPUT);

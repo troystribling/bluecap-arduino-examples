@@ -12,6 +12,7 @@
 HelloWorldPeripheral hello(REQN_PIN, RDYN_PIN);
 
 void setup() {
+  Serial.begin(9600);
   hello.begin();
 }
 
