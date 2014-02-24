@@ -1,7 +1,7 @@
 #include <avr/pgmspace.h>
 #include <avr/eeprom.h>
 #include "hello_world_peripheral.h"
-#include "dlog.h"
+#include "utils.h"
 #include "services.h"
 #include "byte_swap.h"
 

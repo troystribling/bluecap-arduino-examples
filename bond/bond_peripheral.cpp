@@ -1,4 +1,4 @@
-#include "dlog.h"
+#include "utils.h"
 #include "blue_cap_peripheral.h"
 #include "bond_peripheral.h"
 #include "services.h"

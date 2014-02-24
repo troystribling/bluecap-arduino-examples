@@ -20,30 +20,26 @@ bool updateAddBondCount    = false;
 BondPeripheral bond(REQN_PIN, RDYN_PIN, EEPROM_OFFSET, MAX_BONDS);
 
 void setup() {
-#ifdef DEBUG
-  Serial.begin(9600);
-#endif
-
+  bond.begin();
   pinMode(RESET_PIN, INPUT);
   pinMode(ADD_BOND_PIN, INPUT);
-  DLOG(F("To delete the bond stored in EEPROM, connect pin 6 to 5v and reset."));
-  DLOG(F("To add a bond connect pin 6 to 5v."));
+  INFO(F("To delete the bond stored in EEPROM, connect pin 6 to 5v and reset."));
+  INFO(F("To add a bond connect pin 6 to 5v."));
   if (digitalRead(RESET_PIN) == HIGH) {
-    DLOG(F("Clearing EEPROM bond"));
+    INFO(F("Clearing EEPROM bond"));
     bond.clearBondData();
-    DLOG(F("Remove wire and reset"));
+    INFO(F("Remove wire and reset"));
     while(1){delay(1000);};
   }
-  bond.begin();
 }
 
 void loop() {
   bond.loop();
   if (digitalRead(ADD_BOND_PIN) == HIGH && addBondCount == ADD_BOND_PIN_COUNT) {
     if (bond.addBond()) {
-      DLOG(F("Added bond. Remove wire"));
+      INFO(F("Added bond. Remove wire"));
     } else {
-      DLOG(F("Failed to add bond. Remove wire"));
+      INFO(F("Failed to add bond. Remove wire"));
     }
     addBondCount = 0;
     updateAddBondCount = false;
