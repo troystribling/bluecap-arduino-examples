@@ -14,16 +14,16 @@ BondPeripheral::BondPeripheral(uint8_t _reqn, uint8_t _rdyn, uint16_t _eepromOff
 void BondPeripheral::didReceiveCommandResponse(uint8_t commandId, uint8_t* data, uint8_t size) {
   switch(commandId) {
     case ACI_CMD_CONNECT:
-      DLOG(F("ACI_CMD_CONNECT response received"));
+      INFO(F("ACI_CMD_CONNECT response received"));
       break;
     case ACI_CMD_GET_DEVICE_VERSION:
-      DLOG(F("ACI_CMD_GET_DEVICE_VERSION response received"));
+      INFO(F("ACI_CMD_GET_DEVICE_VERSION response received"));
       break;
     case ACI_CMD_BOND:
-      DLOG(F("ACI_CMD_BOND response received"));
+      INFO(F("ACI_CMD_BOND response received"));
       break;
     case ACI_CMD_CHANGE_TIMING:
-      DLOG(F("ACI_CMD_CHANGE_TIMING response received"));
+      INFO(F("ACI_CMD_CHANGE_TIMING response received"));
       break;
     default:
       break;
@@ -35,7 +35,7 @@ void BondPeripheral::loop() {
 }
 
 void BondPeripheral::begin() {
-  DLOG(F("BondPeripheral::begin"));
+  INFO(F("BondPeripheral::begin"));
   BlueCapPeripheral::begin();
 }
 
@@ -44,5 +44,5 @@ bool BondPeripheral::doTimingChange() {
 }
 
 void BondPeripheral::didBond() {
-  DLOG(F("Bonded"));
+  INFO(F("BondPeripheral::didBond"));
 }

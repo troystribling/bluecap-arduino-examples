@@ -55,37 +55,37 @@ void HelloWorldPeripheral::didReceiveData(uint8_t characteristicId, uint8_t* dat
 void HelloWorldPeripheral::didReceiveCommandResponse(uint8_t commandId, uint8_t* data, uint8_t size) {
   switch(commandId) {
     case ACI_CMD_GET_BATTERY_LEVEL:
-      DLOG(F("ACI_CMD_GET_BATTERY_LEVEL response received"));
+      INFO(F("ACI_CMD_GET_BATTERY_LEVEL response received"));
       setBatteryLevel(data, size);
       break;
     case ACI_CMD_GET_TEMPERATURE:
-      DLOG(F("ACI_CMD_GET_TEMPERATURE response received"));
+      INFO(F("ACI_CMD_GET_TEMPERATURE response received"));
       setTemperature(data, size);
       break;
     case ACI_CMD_CONNECT:
-      DLOG(F("ACI_CMD_CONNECT response received"));
+      INFO(F("ACI_CMD_CONNECT response received"));
       break;
     case ACI_CMD_GET_DEVICE_ADDRESS:
-      DLOG(F("ACI_CMD_GET_DEVICE_ADDRESS response received"));
+      INFO(F("ACI_CMD_GET_DEVICE_ADDRESS response received"));
       setBLEAddress(data, size);
       break;
     case ACI_CMD_GET_DEVICE_VERSION:
-      DLOG(F("ACI_CMD_GET_DEVICE_VERSION response received"));
+      INFO(F("ACI_CMD_GET_DEVICE_VERSION response received"));
       break;
     case  ACI_CMD_SET_LOCAL_DATA:
-      DLOG(F("ACI_CMD_SET_LOCAL_DATA response received"));
+      INFO(F("ACI_CMD_SET_LOCAL_DATA response received"));
       break;
     case ACI_CMD_SEND_DATA:
-      DLOG(F("ACI_CMD_SEND_DATA response received"));
+      INFO(F("ACI_CMD_SEND_DATA response received"));
       break;
     case ACI_CMD_SEND_DATA_ACK:
-      DLOG(F("ACI_CMD_SEND_DATA_ACK response received"));
+      INFO(F("ACI_CMD_SEND_DATA_ACK response received"));
       break;
     case ACI_CMD_SEND_DATA_NACK:
-      DLOG(F("ACI_CMD_SEND_DATA_NACK response received"));
+      INFO(F("ACI_CMD_SEND_DATA_NACK response received"));
       break;
     case ACI_CMD_CHANGE_TIMING:
-      DLOG(F("ACI_CMD_CHANGE_TIMING response received"));
+      INFO(F("ACI_CMD_CHANGE_TIMING response received"));
       break;
     default:
       break;
@@ -93,9 +93,9 @@ void HelloWorldPeripheral::didReceiveCommandResponse(uint8_t commandId, uint8_t*
 }
 
 void HelloWorldPeripheral::didReceiveError(uint8_t pipe, uint8_t errorCode) {
-  DLOG(F("didReceiveError on pipe:"));
-  DLOG(pipe, HEX);
-  DLOG(errorCode, HEX);
+  INFO(F("didReceiveError on pipe:"));
+  INFO(pipe, HEX);
+  INFO(errorCode, HEX);
 }
 
 void HelloWorldPeripheral::didStartAdvertising() {
@@ -139,16 +139,16 @@ void HelloWorldPeripheral::setUpdatePeriod(uint8_t* data, uint8_t size) {
       }
     } else {
       sendNack(PIPE_HELLO_WORLD_UPDATE_PERIOD_RX_ACK, INVALID_UPDATE_PERIOD_ERROR);
-      DLOG(F("INVALID_UPDATE_PERIOD_ERROR"));
+      INFO(F("INVALID_UPDATE_PERIOD_ERROR"));
     }
-    DLOG(F("Hello World Update Period Update"));
-    DLOG(updatePeriod, DEC);
+    INFO(F("Hello World Update Period Update"));
+    INFO(updatePeriod, DEC);
 }
 
 void HelloWorldPeripheral::setGreeting() {
   char* greeting = greetings[greetingIndex];
-  DLOG(F("Greeting"));
-  DLOG(greeting);
+  INFO(F("Greeting"));
+  INFO(greeting);
   sendData(PIPE_HELLO_WORLD_GREETING_TX, (uint8_t*)greeting, strlen(greeting) + 1);
   setData(PIPE_HELLO_WORLD_GREETING_SET, (uint8_t*)greeting, strlen(greeting) + 1);
   greetingIndex++;
@@ -165,9 +165,9 @@ void HelloWorldPeripheral::setBatteryLevel(uint8_t* data, uint8_t size) {
     deviceBatteryLevelInitial = level;
   }
   uint8_t percentage = (uint8_t)(100.0*level/deviceBatteryLevelInitial);
-  DLOG(F("setBatteryLevel level, percentage:"));
-  DLOG(level);
-  DLOG(percentage);
+  INFO(F("setBatteryLevel level, percentage:"));
+  INFO(level);
+  INFO(percentage);
   sendData(PIPE_BATTERY_BATTERY_LEVEL_TX, &percentage, 1);
   setData(PIPE_BATTERY_BATTERY_LEVEL_SET, &percentage, 1);
 }
@@ -176,40 +176,40 @@ void HelloWorldPeripheral::setTemperature(uint8_t* data, uint8_t size) {
   int16_t deviceVal;
   memcpy(&deviceVal, data, 2);
   int16_t temp = int16BigToHost(deviceVal) / 4;
-  DLOG(F("setTemperature temp:"));
-  DLOG(temp, DEC);
+  INFO(F("setTemperature temp:"));
+  INFO(temp, DEC);
   sendData(PIPE_TEMPERATURE_TEMPERATURE_TX, data, 2);
   setData(PIPE_TEMPERATURE_TEMPERATURE_SET, data, 2);
 }
 
 void HelloWorldPeripheral::setBLEAddress(uint8_t* data, uint8_t size) {
-  DLOG(F("setBLEAddress"));
-  DLOG(F("size, values:"));
-  DLOG(size);
+  INFO(F("setBLEAddress"));
+  INFO(F("size, values:"));
+  INFO(size);
   for(int i=0; i < size; i++) {
-    DLOG(data[i], HEX);
+    INFO(data[i], HEX);
   }
   setData(PIPE_BLE_DEVICE_ADDRESS_BLE_ADDRESS_SET, &data[1], PIPE_BLE_DEVICE_ADDRESS_BLE_ADDRESS_SET_MAX_SIZE);
   setData(PIPE_BLE_DEVICE_ADDRESS_BLE_ADDRESS_TYPE_SET, data, PIPE_BLE_DEVICE_ADDRESS_BLE_ADDRESS_TYPE_SET_MAX_SIZE);
 }
 
 void HelloWorldPeripheral::writeParams() {
-  DLOG(F("writeParams"));
+  INFO(F("writeParams"));
   eeprom_write_word(&statusAddress, 1);
   eeprom_write_word(&updatePeriodAddress, updatePeriod);
 }
 
 void HelloWorldPeripheral::readParams() {
   uint16_t status = eeprom_read_word(&statusAddress);
-  DLOG(F("readParams status:"));
-  DLOG(status, DEC);
+  INFO(F("readParams status:"));
+  INFO(status, DEC);
   if (status == 1) {
     updatePeriod = eeprom_read_word(&updatePeriodAddress);
-    DLOG(F("readParams EEPROM updatePeriod:"));
+    INFO(F("readParams EEPROM updatePeriod:"));
   } else {
-    DLOG(F("readParams initialize updatePeriod:"));
+    INFO(F("readParams initialize updatePeriod:"));
     updatePeriod = INITIAL_UPDATE_PERIOD;
     writeParams();
   }
-  DLOG(updatePeriod, DEC);
+  INFO(updatePeriod, DEC);
 }
