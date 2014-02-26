@@ -4,6 +4,7 @@
 #import "blue_cap_peripheral.h"
 
 class BondPeripheral : public BlueCapBondedPeripheral {
+
 public:
 
   BondPeripheral(uint8_t _reqn, uint8_t _rdyn, uint16_t _eepromOffset, uint8_t _index);

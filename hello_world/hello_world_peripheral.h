@@ -4,6 +4,7 @@
 #import "blue_cap_peripheral.h"
 
 class HelloWorldPeripheral : public BlueCapPeripheral {
+
 public:
 
   HelloWorldPeripheral(uint8_t reqn, uint8_t rdyn);
