@@ -17,6 +17,7 @@ protected:
   void didReceiveData(uint8_t characteristicId, uint8_t* data, uint8_t size);
   void didReceiveCommandResponse(uint8_t commandId, uint8_t* data, uint8_t size);
   void didDisconnect();
+  void didTimeout();
   void didConnect();
   void didStartAdvertising();
   void didReceiveError(uint8_t pipe, uint8_t errorCode);
