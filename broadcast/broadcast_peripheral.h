@@ -19,7 +19,14 @@ protected:
   void didTimeout();
   void didReceiveError(uint8_t pipe, uint8_t errorCode);
 
-  bool doTimingChange();
+private:
+
+  aci_device_output_power_t txPower[4];
+  uint8_t currentTxPower;
+
+private:
+
+  void nextTxPower();
 
 };
 
