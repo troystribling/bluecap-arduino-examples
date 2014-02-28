@@ -46,3 +46,9 @@ bool BondPeripheral::doTimingChange() {
 void BondPeripheral::didBond() {
   INFO(F("BondPeripheral::didBond"));
 }
+
+void BondPeripheral::didReceiveError(uint8_t pipe, uint8_t errorCode) {
+  INFO(F("BondPeripheral::didReceiveError"));
+  INFO(pipe, HEX);
+  INFO(errorCode, HEX);
+}
