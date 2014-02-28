@@ -102,9 +102,6 @@ void HelloWorldPeripheral::didStartAdvertising() {
   readParams();
 }
 
-void HelloWorldPeripheral::didReceiveStatusChange() {
-}
-
 void HelloWorldPeripheral::didConnect() {
   uint16_t bigVal = int16HostToBig(updatePeriod);
   setData(PIPE_HELLO_WORLD_UPDATE_PERIOD_SET, (uint8_t*)&bigVal, 2);

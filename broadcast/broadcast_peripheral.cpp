@@ -19,31 +19,27 @@ void BroadcastPeripheral::loop() {
   BlueCapPeripheral::loop();
 }
 
-void BroadcastPeripheral::didReceiveData(uint8_t characteristicId, uint8_t* data, uint8_t size) {
-}
-
 void BroadcastPeripheral::didReceiveCommandResponse(uint8_t commandId, uint8_t* data, uint8_t size) {
+  switch(commandId) {
+    case ACI_CMD_BROADCAST:
+      INFO(F("ACI_CMD_BROADCAST response received, broadcasting"));
+      break;
+    default:
+      break;
+  }
 }
 
 void BroadcastPeripheral::didDisconnect() {
-}
-
-void BroadcastPeripheral::didConnect() {
+  INFO(F("BroadcastPeripheral::didDisconnect"));
 }
 
 void BroadcastPeripheral::didTimeout() {
-}
-
-void BroadcastPeripheral::didStartAdvertising() {
+  INFO(F("BroadcastPeripheral::didTimeout"));
+  broadcast();
 }
 
 void BroadcastPeripheral::didReceiveError(uint8_t pipe, uint8_t errorCode) {
-}
-
-void BroadcastPeripheral::didReceiveStatusChange() {
-}
-
-void BroadcastPeripheral::didBond() {
+  INFO(F("BroadcastPeripheral::didReceiveError"));
 }
 
 bool BroadcastPeripheral::doTimingChange() {
