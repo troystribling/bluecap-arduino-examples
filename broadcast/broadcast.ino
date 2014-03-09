@@ -16,6 +16,7 @@ BroadcastPeripheral broadcast(REQN_PIN, RDYN_PIN);
 
 void setup() {
   Serial.begin(9600);
+  DBUG_FREE_MEMORY;
   broadcast.begin();
 }
 

@@ -16,7 +16,7 @@ BroadcastPeripheral::BroadcastPeripheral(uint8_t _reqnPin, uint8_t _rdynPin) : B
 }
 
 void BroadcastPeripheral::begin() {
-  INFO(F("BroadcastPeripheral::begin"));
+  INFO_LOG(F("BroadcastPeripheral::begin"));
   BlueCapPeripheral::begin();
 }
 
@@ -27,10 +27,10 @@ void BroadcastPeripheral::loop() {
 void BroadcastPeripheral::didReceiveCommandResponse(uint8_t commandId, uint8_t* data, uint8_t size) {
   switch(commandId) {
     case ACI_CMD_BROADCAST:
-      INFO(F("ACI_CMD_BROADCAST response received, broadcasting"));
+      INFO_LOG(F("ACI_CMD_BROADCAST response received, broadcasting"));
       break;
     case ACI_CMD_SET_TX_POWER:
-      INFO(F("ACI_CMD_SET_TX_POWER response received, broadcasting"));
+      INFO_LOG(F("ACI_CMD_SET_TX_POWER response received, broadcasting"));
       break;
     default:
       break;
@@ -38,25 +38,25 @@ void BroadcastPeripheral::didReceiveCommandResponse(uint8_t commandId, uint8_t* 
 }
 
 void BroadcastPeripheral::didDisconnect() {
-  INFO(F("BroadcastPeripheral::didDisconnect"));
+  INFO_LOG(F("BroadcastPeripheral::didDisconnect"));
 }
 
 void BroadcastPeripheral::didTimeout() {
-  INFO(F("BroadcastPeripheral::didTimeout"));
+  INFO_LOG(F("BroadcastPeripheral::didTimeout"));
   nextTxPower();
 }
 
 void BroadcastPeripheral::didReceiveError(uint8_t pipe, uint8_t errorCode) {
-  INFO(F("BroadcastPeripheral::didReceiveError code on pipe:"));
-  INFO(pipe, HEX);
-  INFO(errorCode, HEX);
+  INFO_LOG(F("BroadcastPeripheral::didReceiveError code on pipe:"));
+  INFO_LOG(pipe, HEX);
+  INFO_LOG(errorCode, HEX);
 }
 
 void BroadcastPeripheral::nextTxPower() {
   currentTxPower = currentTxPower++;
   currentTxPower = currentTxPower % 4;
-  INFO(F("currentTxPower"));
-  INFO(currentTxPower);
+  INFO_LOG(F("currentTxPower"));
+  INFO_LOG(currentTxPower);
   setTxPower(txPower[currentTxPower]);
   broadcast();
 }

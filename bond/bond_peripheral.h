@@ -1,7 +1,7 @@
 #ifndef _BOND_PERIPHERAL_H
 #define _BOND_PERIPHERAL_H
 
-#import "blue_cap_peripheral.h"
+#include "blue_cap_peripheral.h"
 
 class BondPeripheral : public BlueCapBondedPeripheral {
 
